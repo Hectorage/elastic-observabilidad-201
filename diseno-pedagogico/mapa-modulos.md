@@ -28,12 +28,12 @@
 | M01 | `M01-arquitectura-stack/` | listo |
 | M02 | `M02-despliegue-stack/` | listo |
 | M03 | `M03-recoleccion-beats/` | listo |
-| M04 | `M04-logstash-pipelines/` | en elaboración |
-| M05 | `M05-dashboards-kibana/` | en elaboración |
-| M06 | `M06-ilm-snapshots/` | en elaboración |
-| M07 | `M07-enriquecimiento-eventos/` | en elaboración |
-| M08 | `M08-alerting-watcher/` | en elaboración |
-| M09 | `M09-seguridad-tls-rbac/` | en elaboración |
-| M10 | `M10-self-observability/` | en elaboración |
-| M11 | `M11-integraciones-externas/` | en elaboración |
-| M12 | `M12-rendimiento-escalabilidad/` | en elaboración |
+| M04 | `M04-logstash-pipelines/` | listo (4 guiones) |
+| M05 | `M05-dashboards-kibana/` | listo (4 guiones) |
+| M06 | `M06-ilm-snapshots/` | listo (4 guiones) |
+| M07 | `M07-enriquecimiento-eventos/` | listo (4 guiones) |
+| M08 | `M08-alerting-watcher/` | listo (4 guiones) |
+| M09 | `M09-seguridad-tls-rbac/` | listo (4 guiones) |
+| M10 | `M10-self-observability/` | listo (4 guiones) |
+| M11 | `M11-integraciones-externas/` | listo (4 guiones) |
+| M12 | `M12-rendimiento-escalabilidad/` | listo (4 guiones) |

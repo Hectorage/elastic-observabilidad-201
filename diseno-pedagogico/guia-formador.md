@@ -1,6 +1,6 @@
-# Guía del formador — M01–M03
+# Guía del formador — M01–M12
 
-Apoyo para impartir la primera capa. Complementa `ritmo-clase.md` (tiempos) y `mapa-modulos.md` (alcance).
+Apoyo para impartir el curso completo. Complementa `ritmo-clase.md` (tiempos) y `mapa-modulos.md` (alcance).
 
 ## Antes de empezar la jornada
 
@@ -15,6 +15,15 @@ Apoyo para impartir la primera capa. Complementa `ritmo-clase.md` (tiempos) y `m
 | M01 | Stack UP + evento visto en Discover | `./scripts/health-check.sh`; KQL `log.source : "demo-app"` |
 | M02 | Cluster + Kibana + Filebeat (desglose) | `_cluster/health`; `lab-smoke` indexado |
 | M03 | Tres familias de datos | `_cat/indices` muestra filebeat/metricbeat/auditbeat |
+| M04 | Logstash + campos HTTP | `:9600` pipelines; `http.response.status_code` en Discover |
+| M05 | Dashboards guardados | Objetos `lab-m05-*` en Saved Objects |
+| M06 | ILM + snapshot | `_ilm/explain`; `_snapshot/lab_fs` SUCCESS |
+| M07 | Access parseado | `lab-access-test` con `client.geo` |
+| M08 | Watch o regla activa | UI Alerts o `_watcher/watch/lab-m08-*` |
+| M09 | Login con `elastic` | curl sin credenciales → 401 |
+| M10 | Dashboard salud stack | `lab-m10-stack-health` |
+| M11 | Fluent Bit / Redpanda | `lab-fluent-bit/_count`; `rpk topic list` |
+| M12 | Bulk 5k + checklist | `lab-perf-bulk/_count` ≥ 5000 |
 
 ## Orientación a los retos de “Antes de seguir” (M01)
 
@@ -104,3 +113,12 @@ M01 es **hands-on desde el ejercicio 1**: no hay tabla ni diagrama sin stack en 
 - Editar configs y no reiniciar el beat.
 
 Ver `labs/TROUBLESHOOTING.md` para la matriz completa.
+
+## Notas M04–M12
+
+- **M04:** recordar dos ficheros compose (`docker-compose.logstash.yml`). Tras M04-04, restaurar pipeline `10-beats-to-es.conf`.
+- **M05:** si no hay campos numéricos, volver a M04 o usar KQL sobre `message`.
+- **M06:** `setup-ilm-lab.sh` usa fases en **minutos** — dejar claro que en prod son días.
+- **M09:** reservar bloque para `down -v` y passwords; Kibana puede requerir `kibana_system` reset manual en 8.17.
+- **M11:** Redpanda consume ~512 MB; en Codespaces 4 GB omitir Kafka y quedarse en Fluent Bit.
+- **M12:** bulk 5k puede tardar; no lanzar en paralelo en máquinas justas de RAM.

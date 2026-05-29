@@ -1,6 +1,6 @@
 # Chuleta — comandos y KQL del laboratorio
 
-Referencia rápida para M01–M03. Todos los comandos se ejecutan desde la **raíz del repo** salvo que se indique.
+Referencia rápida para **M01–M12**. Comandos desde la **raíz del repo** salvo que se indique.
 
 ## Ciclo de vida del stack
 
@@ -9,15 +9,25 @@ Referencia rápida para M01–M03. Todos los comandos se ejecutan desde la **ra�
 docker compose -f infra/docker-compose.yml up -d
 # Con Beats (Filebeat, Metricbeat, Auditbeat, loggen)
 docker compose -f infra/docker-compose.yml --profile beats up -d
+# M04 — Logstash en el camino
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.logstash.yml \
+  --profile beats --profile logstash up -d
+# M11 — Fluent Bit, Redpanda, Prometheus
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.integrations.yml \
+  --profile integrations up -d
+# M09 — seguridad (reinicio; ver guion)
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.security.yml \
+  --profile beats up -d
 
-# Estado / reinicio / parada
 docker compose -f infra/docker-compose.yml ps
-docker compose -f infra/docker-compose.yml restart filebeat
-docker compose -f infra/docker-compose.yml --profile beats down      # conserva datos (volumen esdata)
-docker compose -f infra/docker-compose.yml --profile beats down -v   # ¡borra datos!
-
-# Salud
 ./scripts/health-check.sh
+```
+
+## Scripts de apoyo
+
+```bash
+./scripts/apply-ingest-pipelines.sh    # M04/M07
+./scripts/setup-ilm-lab.sh             # M06
 ```
 
 ## Logs de contenedores
@@ -26,71 +36,65 @@ docker compose -f infra/docker-compose.yml --profile beats down -v   # ¡borra d
 docker logs lab-elasticsearch --tail 50
 docker logs lab-kibana --tail 50
 docker logs lab-filebeat --tail 20
-docker logs lab-metricbeat --tail 20
-docker logs lab-auditbeat --tail 20
+docker logs lab-logstash --tail 20
+docker logs lab-fluent-bit --tail 20
 ```
 
 ## API de Elasticsearch (REST)
 
 ```bash
-curl -fsS http://localhost:9200/                                  # versión / build
-curl -fsS 'http://localhost:9200/_cluster/health?pretty'          # salud
-curl -fsS 'http://localhost:9200/_cat/nodes?v'                    # nodos
-curl -fsS 'http://localhost:9200/_cat/indices?v'                 # índices
-curl -fsS 'http://localhost:9200/_cat/shards?v'                  # shards (rojos = problema)
-curl -fsS 'http://localhost:9200/filebeat-*/_count'              # nº de docs
-curl -fsS 'http://localhost:9200/filebeat-*/_search?size=1&sort=@timestamp:desc&pretty'
+curl -fsS http://localhost:9200/_cluster/health?pretty
+curl -fsS http://localhost:9200/_cat/indices?v
+curl -fsS http://localhost:9200/filebeat-*/_count
+curl -fsS http://localhost:9200/_ingest/pipeline/lab-parse-demo-app?pretty
+curl -fsS http://localhost:9200/_ilm/policy/lab-hot-warm-delete?pretty
+curl -fsS http://localhost:9200/_snapshot/lab_fs/_all?pretty
+curl -fsS http://localhost:9200/_watcher/watch/lab-m08-error-watch?pretty
 ```
 
-Búsqueda con cuerpo JSON:
+Con seguridad (M09+):
 
 ```bash
-curl -fsS -H 'Content-Type: application/json' \
-  'http://localhost:9200/filebeat-*/_search?pretty' \
-  -d '{"size":3,"query":{"match":{"message":"ERROR"}}}'
+source infra/.env
+curl -fsS -u "elastic:${ELASTIC_PASSWORD}" http://localhost:9200/_cluster/health?pretty
 ```
 
-## Patrones de data stream (familias)
+## Logstash
 
-| Familia | Patrón de consulta | Backing index real |
-|---------|--------------------|--------------------|
-| Logs | `filebeat-*` | `.ds-filebeat-8.17.2-*` |
-| Métricas | `metricbeat-*` | `.ds-metricbeat-8.17.2-*` |
-| Auditoría / FIM | `auditbeat-*` | `.ds-auditbeat-8.17.2-*` |
+```bash
+curl -fsS http://localhost:9600/_node/stats/pipelines?pretty
+```
+
+## Patrones de índice / data stream
+
+| Familia | Patrón | Notas |
+|---------|--------|-------|
+| Logs Beats | `filebeat-*` | data stream por defecto |
+| Errores M04 | `filebeat-errors-*` | pipeline condicional |
+| Métricas | `metricbeat-*` | |
+| Auditoría | `auditbeat-*` | |
+| Fluent Bit M11 | `lab-fluent-bit` | índice clásico |
+| ILM lab | `lab-ilm-demo-*` | |
+| Access parse | `lab-access-test`, `lab-access-bulk` | M07 |
 
 ## KQL útil en Discover
 
 ```text
-log.source : "demo-app"            # eventos del generador
-message : *ERROR*                  # texto libre
-status : 500                       # respuestas con error
-log.level : "warn"                 # nivel
-event.module : "docker"            # módulo Metricbeat (¡no metricset.module!)
-metricset.name : "cpu"             # tipo de métrica
-event.action : "deleted"           # acción FIM (Auditbeat)
-file.path : *audit-watch*          # ficheros vigilados
-host.name : "lab-es01"             # filtrar por host (correlación)
+log.source : "demo-app"
+http.response.status_code >= 500
+latency_ms > 300
+event.module : "docker" and metricset.name : "cpu"
+client.geo.country_name : *
+user_agent.name : *Googlebot*
 ```
 
-Combinaciones:
+## ILM y snapshots (M06)
 
-```text
-log.source : "demo-app" and status >= 500
-event.module : "docker" and metricset.name : "memory"
+```bash
+curl -fsS -X POST http://localhost:9200/lab-ilm-demo/_rollover
+curl -fsS http://localhost:9200/lab-ilm-demo-*/_ilm/explain?pretty
 ```
-
-## Campos clave (ECS) para correlacionar
-
-- `@timestamp` — siempre en UTC.
-- `host.name` — dimensión común entre logs/métricas/auditoría.
-- `event.module`, `event.dataset`, `event.action` — clasificación de eventos.
-- `service.name`, `log.source`, `environment` — gobierno y troceo.
 
 ## Referencias oficiales
 
-Ver lista actualizada en [docs/enlaces-oficiales.md](../docs/enlaces-oficiales.md).
-
-- Elastic Stack: https://www.elastic.co/docs/get-started/the-stack
-- ECS: https://www.elastic.co/docs/reference/ecs
-- Data streams: https://www.elastic.co/docs/manage-data/data-store/data-streams
-- KQL: https://www.elastic.co/docs/explore-analyze/query-filter/languages/kql
+[docs/enlaces-oficiales.md](../docs/enlaces-oficiales.md)

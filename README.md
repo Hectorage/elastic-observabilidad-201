@@ -1,6 +1,6 @@
 # Elastic Stack Observabilidad Lab First
 
-Curso **100 % laboratorio** para montar y operar un stack ELK en Docker: Elasticsearch, Kibana y Beats (Filebeat, Metricbeat, Auditbeat).  
+Curso **100 % laboratorio** para montar y operar un stack ELK en Docker: Elasticsearch, Kibana, Beats, Logstash, ILM, alertas e integraciones.  
 Versión del stack: **8.17.2** · Entorno: **GitHub Codespaces** + fork de este repo.
 
 ---
@@ -20,64 +20,62 @@ Versión del stack: **8.17.2** · Entorno: **GitHub Codespaces** + fork de este 
 Aprenderás observabilidad **haciendo**, no leyendo diapositivas:
 
 - Levantarás el stack con el `docker-compose` del repo.
-- Verás logs y métricas en **Kibana Discover**.
-- Pararás y arrancarás componentes para entender qué falla cuando algo no cuadra.
+- Verás logs y métricas en **Kibana Discover** y dashboards.
+- Procesarás eventos con **Logstash** e **ingest pipelines**.
+- Gestionarás retención con **ILM**, alertarás y endurecerás el clúster en **M09**.
 
-Cada ejercicio indica **salida esperada**, checklist de **Validación** y bloque **Antes de seguir** (ideas clave + retos opcionales).
+Cada ejercicio indica **salida esperada**, checklist de **Validación** y bloque **Antes de seguir**.
 
 ---
 
 ## El pipeline que montarás
 
 ```text
-  loggen / ficheros de log
+  loggen / ficheros / Fluent Bit
            │
            ▼
-       Filebeat ──────────► Elasticsearch :9200
-           │                      ▲
-    Metricbeat ──────────────────┤
-           │                      │
-    Auditbeat ───────────────────┘
-                                  │
-                                  ▼
-                            Kibana :5601
-                           (Discover)
+       Filebeat ──► Logstash (M04) ──► Elasticsearch :9200
+           │              ▲                  ▲
+    Metricbeat ───────────┴──────────────────┤
+           │                                 │
+    Auditbeat ──────────────────────────────┘
+                                            │
+                                            ▼
+                                      Kibana :5601
+                              (Discover, dashboards, alertas)
 ```
 
-Logstash, alertas avanzadas e integraciones (Kafka, Fluent Bit…) entran en módulos posteriores (M04+).
+Kafka/Redpanda (M11) y Prometheus entran como integraciones opcionales.
 
 ---
 
 ## Mapa completo del curso (M01–M12)
 
-**Duración total orientativa:** 64 h · Detalle de objetivos: [diseno-pedagogico/mapa-modulos.md](diseno-pedagogico/mapa-modulos.md)
+**Duración total orientativa:** 64 h · Detalle: [diseno-pedagogico/mapa-modulos.md](diseno-pedagogico/mapa-modulos.md)
 
 | # | Módulo | Horas | Carpeta (labs/) | Estado |
 |---|--------|-------|-----------------|--------|
-| M01 | Arquitectura y componentes del Elastic Stack | 4 h | [M01-arquitectura-stack/](labs/M01-arquitectura-stack/README.md) | listo |
-| M02 | Instalación de Elasticsearch, Kibana y Beats | 6 h | [M02-despliegue-stack/](labs/M02-despliegue-stack/README.md) | listo |
-| M03 | Filebeat, Metricbeat y Auditbeat | 6 h | [M03-recoleccion-beats/](labs/M03-recoleccion-beats/README.md) | listo |
-| M04 | Logstash e ingest pipelines | 7 h | `M04-logstash-pipelines/` | en elaboración |
-| M05 | Dashboards y alertas en Kibana | 6 h | `M05-dashboards-kibana/` | en elaboración |
-| M06 | ILM, rollover y snapshots | 5 h | `M06-ilm-snapshots/` | en elaboración |
-| M07 | Enriquecimiento: grok, geoIP, user agent | 5 h | `M07-enriquecimiento-eventos/` | en elaboración |
-| M08 | Alerting y Watcher | 5 h | `M08-alerting-watcher/` | en elaboración |
-| M09 | Seguridad: TLS, RBAC, LDAP | 6 h | `M09-seguridad-tls-rbac/` | en elaboración |
-| M10 | Self-observability del stack | 4 h | `M10-self-observability/` | en elaboración |
-| M11 | Kafka, Fluent Bit, Prometheus / K8s | 6 h | `M11-integraciones-externas/` | en elaboración |
-| M12 | Rendimiento y escalabilidad | 4 h | `M12-rendimiento-escalabilidad/` | en elaboración |
-
-**Primera capa publicada:** M01–M03 (~16 h). El resto del temario sigue el orden de la tabla; las carpetas `M04-*` … `M12-*` se irán añadiendo con sus guiones lab-first.
+| M01 | Arquitectura y componentes | 4 h | [M01-arquitectura-stack/](labs/M01-arquitectura-stack/README.md) | listo |
+| M02 | Instalación ES, Kibana y Beats | 6 h | [M02-despliegue-stack/](labs/M02-despliegue-stack/README.md) | listo |
+| M03 | Filebeat, Metricbeat, Auditbeat | 6 h | [M03-recoleccion-beats/](labs/M03-recoleccion-beats/README.md) | listo |
+| M04 | Logstash e ingest pipelines | 7 h | [M04-logstash-pipelines/](labs/M04-logstash-pipelines/README.md) | listo |
+| M05 | Dashboards y alertas en Kibana | 6 h | [M05-dashboards-kibana/](labs/M05-dashboards-kibana/README.md) | listo |
+| M06 | ILM, rollover y snapshots | 5 h | [M06-ilm-snapshots/](labs/M06-ilm-snapshots/README.md) | listo |
+| M07 | Enriquecimiento: grok, geoIP, UA | 5 h | [M07-enriquecimiento-eventos/](labs/M07-enriquecimiento-eventos/README.md) | listo |
+| M08 | Alerting y Watcher | 5 h | [M08-alerting-watcher/](labs/M08-alerting-watcher/README.md) | listo |
+| M09 | Seguridad: TLS, RBAC, LDAP | 6 h | [M09-seguridad-tls-rbac/](labs/M09-seguridad-tls-rbac/README.md) | listo |
+| M10 | Self-observability del stack | 4 h | [M10-self-observability/](labs/M10-self-observability/README.md) | listo |
+| M11 | Kafka, Fluent Bit, Prometheus | 6 h | [M11-integraciones-externas/](labs/M11-integraciones-externas/README.md) | listo |
+| M12 | Rendimiento y escalabilidad | 4 h | [M12-rendimiento-escalabilidad/](labs/M12-rendimiento-escalabilidad/README.md) | listo |
 
 ---
 
-## Al cerrar M03, deberías poder
+## Al cerrar el curso, deberías poder
 
-- Explicar el recorrido **fuente → Beat → Elasticsearch → Kibana** con un ejemplo real.
-- Leer `_cluster/health`, `_count` y un documento en `_search`.
-- Filtrar en Discover con KQL (`log.source`, `message`, `host.name`).
-- Diferenciar data streams (`filebeat-*`) de un índice clásico (`lab-smoke`).
-- Tener logs, métricas y eventos de auditoría en el mismo clúster.
+- Diseñar un pipeline **fuente → procesamiento → ES → Kibana** con criterio Logstash vs ingest.
+- Operar **ILM**, snapshots y dashboards operativos.
+- Definir **alertas** (Kibana + Watcher) y aplicar **RBAC** básico.
+- Integrar **Fluent Bit / Kafka / Prometheus** y razonar sobre sizing.
 
 ---
 
@@ -88,21 +86,22 @@ Logstash, alertas avanzadas e integraciones (Kafka, Fluent Bit…) entran en mó
 | Comprobar salud del entorno | `./scripts/health-check.sh` |
 | Síntoma → causa → solución | [labs/TROUBLESHOOTING.md](labs/TROUBLESHOOTING.md) |
 | Comandos y KQL frecuentes | [labs/CHEATSHEET.md](labs/CHEATSHEET.md) |
-| Docker / versiones / Beats | [infra/README.md](infra/README.md) |
-| Documentación Elastic (URLs actuales) | [docs/enlaces-oficiales.md](docs/enlaces-oficiales.md) |
+| Docker / perfiles compose | [infra/README.md](infra/README.md) |
+| Documentación Elastic | [docs/enlaces-oficiales.md](docs/enlaces-oficiales.md) |
 
 ---
 
 ## Estructura del repositorio
 
 ```text
-labs/Mxx-slug/          Guiones de laboratorio (M01-01-*.md, …)
-infra/                  docker-compose.yml, configs de Beats
-scripts/                health-check.sh
-diseno-pedagogico/      [mapa-modulos.md](diseno-pedagogico/mapa-modulos.md), [ritmo-clase.md](diseno-pedagogico/ritmo-clase.md), guía del formador
+labs/Mxx-slug/          Guiones (Mxx-NN-slug.md)
+infra/                  docker-compose + overrides (logstash, security, integrations)
+infra/ingest-pipelines/ JSON de pipelines (M04/M07)
+scripts/                health-check, apply-ingest-pipelines, setup-ilm-lab
+diseno-pedagogico/      mapa, ritmo, guía del formador
 ```
 
-Convención de nombres: carpeta `M02-despliegue-stack/`, ejercicio `M02-03-filebeat-ingesta-viva.md`.
+Convención: carpeta `M04-logstash-pipelines/`, ejercicio `M04-01-logstash-en-el-camino.md`.
 
 ---
 

@@ -1,0 +1,42 @@
+# Override M09: seguridad nativa (TLS simplificado en guion; passwords en .env)
+# AVISO: reinicia el clúster. No mezcles con perfiles hasta completar M09-01.
+# Uso: cp infra/.env.example infra/.env  # y define ELASTIC_PASSWORD
+#      docker compose -f infra/docker-compose.yml -f infra/docker-compose.security.yml --profile beats up -d
+
+services:
+  elasticsearch:
+    environment:
+      - xpack.security.enabled=true
+      - xpack.security.enrollment.enabled=false
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-changeme}
+    ports:
+      - "9200:9200"
+
+  kibana:
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_SYSTEM_PASSWORD:-changeme}
+      - ELASTICSEARCH_SERVICEACCOUNTTOKEN=
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  filebeat:
+    environment:
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD:-changeme}
+    # El guion M09 detalla TLS; aquí solo credenciales para arranque guiado.
+
+  metricbeat:
+    environment:
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD:-changeme}
+
+  auditbeat:
+    environment:
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD:-changeme}

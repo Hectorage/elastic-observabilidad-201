@@ -1,0 +1,24 @@
+# Filebeat → Logstash (M04). M01–M03 usan filebeat.yml directo a Elasticsearch.
+filebeat.inputs:
+  - type: filestream
+    id: lab-app-logs
+    enabled: true
+    paths:
+      - /var/log/lab/*.log
+    fields:
+      log.source: demo-app
+      course.module: M04
+    fields_under_root: true
+
+processors:
+  - add_host_metadata: ~
+  - add_docker_metadata: ~
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+setup.kibana:
+  host: "http://kibana:5601"
+
+setup.dashboards.enabled: false
+setup.ilm.enabled: true

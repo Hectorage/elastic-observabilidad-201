@@ -18,7 +18,7 @@ Desde la raíz del repo:
 
 Kibana: http://localhost:5601 — Elasticsearch: http://localhost:9200
 
-## Servicios
+## Servicios base
 
 | Servicio | Perfil | Puerto |
 |----------|--------|--------|
@@ -29,7 +29,38 @@ Kibana: http://localhost:5601 — Elasticsearch: http://localhost:9200
 | metricbeat | beats | — |
 | auditbeat | beats | — |
 
-Seguridad deshabilitada a propósito hasta el módulo M09.
+Seguridad deshabilitada hasta **M09** (compose base).
+
+## Overrides por módulo
+
+| Archivo | Módulo | Uso |
+|---------|--------|-----|
+| `docker-compose.logstash.yml` | M04 | `--profile logstash` + Filebeat → Logstash |
+| `docker-compose.security.yml` | M09 | `xpack.security.enabled=true` |
+| `docker-compose.integrations.yml` | M11 | `--profile integrations` |
+
+Ejemplo M04:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.logstash.yml \
+  --profile beats --profile logstash up -d
+```
+
+## Directorios de config
+
+| Ruta | Contenido |
+|------|-----------|
+| `filebeat/` | `filebeat.yml` (directo ES), `filebeat-logstash.yml` (M04) |
+| `logstash/pipeline/` | Pipelines `.conf` |
+| `ingest-pipelines/` | JSON para `_ingest/pipeline` |
+| `fluent-bit/` | Salida a índice `lab-fluent-bit` |
+| `prometheus/` | Scrape de lab |
+| `snapshots/` | Repositorio FS para snapshots M06 |
+
+## Scripts (raíz `scripts/`)
+
+- `apply-ingest-pipelines.sh` — carga `infra/ingest-pipelines/*.json`
+- `setup-ilm-lab.sh` — política `lab-hot-warm-delete` acelerada para lab
 
 ## Requisitos
 

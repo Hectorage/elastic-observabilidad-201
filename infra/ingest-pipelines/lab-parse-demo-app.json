@@ -1,0 +1,28 @@
+{
+  "description": "Parseo demo-app (M04/M07) — campos HTTP y latencia",
+  "processors": [
+    {
+      "grok": {
+        "field": "message",
+        "patterns": [
+          "%{TIMESTAMP_ISO8601:log_timestamp} %{LOGLEVEL:log.level} %{WORD:service.name} request_id=%{NUMBER:request_id} method=%{WORD:http.request.method} path=%{URIPATH:url.path} status=%{NUMBER:http.response.status_code} latency_ms=%{NUMBER:latency_ms}"
+        ],
+        "ignore_failure": true
+      }
+    },
+    {
+      "convert": {
+        "field": "http.response.status_code",
+        "type": "integer",
+        "ignore_failure": true
+      }
+    },
+    {
+      "convert": {
+        "field": "latency_ms",
+        "type": "integer",
+        "ignore_failure": true
+      }
+    }
+  ]
+}

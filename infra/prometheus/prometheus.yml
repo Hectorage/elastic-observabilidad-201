@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: elasticsearch
+    metrics_path: /_prometheus/metrics
+    static_configs:
+      - targets: ["elasticsearch:9200"]
+    # En 8.17 sin seguridad el endpoint puede no existir; el guion M11-03 usa métricas de Prometheus + correlación manual.

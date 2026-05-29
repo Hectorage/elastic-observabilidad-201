@@ -52,11 +52,24 @@ for fam in filebeat metricbeat auditbeat; do
 done
 hr
 
-echo "[6/6] Kibana status"
+echo "[6/7] Kibana status"
 if curl -fsS "${KIBANA_URL}/api/status" 2>/dev/null | grep -qE '"level":"available"|"overall".*available|available'; then
   green "Kibana available — UI: ${KIBANA_URL}"
 else
   echo "AVISO: Kibana aún no disponible en ${KIBANA_URL} (puede estar arrancando)"
+fi
+hr
+
+echo "[7/7] Servicios opcionales (M04/M11)"
+if curl -fsS "http://localhost:9600/" >/dev/null 2>&1; then
+  green "Logstash API :9600 — OK"
+else
+  echo "  Logstash: no activo (normal fuera de M04)"
+fi
+if curl -fsS "http://localhost:9090/-/ready" >/dev/null 2>&1; then
+  green "Prometheus :9090 — OK"
+else
+  echo "  Prometheus: no activo (normal fuera de M11)"
 fi
 
 hr

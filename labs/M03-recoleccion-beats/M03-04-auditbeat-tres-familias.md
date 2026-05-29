@@ -133,3 +133,7 @@ Salida esperada en health-check: las tres familias con docs > 0.
 1. ¿Qué `event.action` viste al borrar el fichero?
 2. Campos ECS comunes entre un doc Filebeat y uno Auditbeat (`@timestamp`, `host.name`, `agent.*`).
 3. (Opcional) Por qué security (M09) sigue desactivado aunque veamos `sshd` en logs.
+
+---
+
+**Siguiente módulo →** [M04-01 — Logstash en el camino](../M04-logstash-pipelines/M04-01-logstash-en-el-camino.md)

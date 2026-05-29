@@ -12,11 +12,13 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
+      - path.repo=/usr/share/elasticsearch/snapshots
       - ES_JAVA_OPTS=${ES_JAVA_OPTS}
     ports:
       - "9200:9200"
     volumes:
       - esdata:/usr/share/elasticsearch/data
+      - ./snapshots:/usr/share/elasticsearch/snapshots
     healthcheck:
       test:
         [

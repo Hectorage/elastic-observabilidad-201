@@ -1,0 +1,32 @@
+# Override M04: Filebeat → Logstash → Elasticsearch
+# Uso: docker compose -f infra/docker-compose.yml -f infra/docker-compose.logstash.yml --profile beats --profile logstash up -d
+
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    container_name: lab-logstash
+    profiles: ["logstash"]
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    environment:
+      - LS_JAVA_OPTS=-Xms256m -Xmx256m
+    volumes:
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9600/_node/stats | grep -q pipelines"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
+  filebeat:
+    volumes:
+      - ./filebeat/filebeat-logstash.yml:/usr/share/filebeat/filebeat.yml:ro
+    depends_on:
+      logstash:
+        condition: service_healthy

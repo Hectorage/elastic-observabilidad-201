@@ -1,0 +1,47 @@
+# Override M11: Fluent Bit, Redpanda (Kafka API), Prometheus
+# Uso: docker compose -f infra/docker-compose.yml -f infra/docker-compose.integrations.yml --profile integrations up -d
+
+services:
+  fluent-bit:
+    image: fluent/fluent-bit:3.2
+    container_name: lab-fluent-bit
+    profiles: ["integrations"]
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - ./samples/logs:/var/log/lab:ro
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.2.4
+    container_name: lab-redpanda
+    profiles: ["integrations"]
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - 512M
+      - --reserve-memory
+      - 0M
+      - --node-id
+      - "0"
+      - --kafka-addr
+      - internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr
+      - internal://redpanda:9092,external://localhost:19092
+    ports:
+      - "19092:19092"
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: lab-prometheus
+    profiles: ["integrations"]
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"

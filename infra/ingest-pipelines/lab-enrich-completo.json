@@ -1,0 +1,27 @@
+{
+  "description": "Pipeline completo M07: nginx grok + geoip + user_agent",
+  "processors": [
+    {
+      "grok": {
+        "field": "message",
+        "patterns": [
+          "%{IPORHOST:client.ip} - - \\[%{HTTPDATE:nginx.time_local}\\] \"%{WORD:http.request.method} %{URIPATHPARAM:url.original} HTTP/%{NUMBER:http.version}\" %{NUMBER:http.response.status_code} %{NUMBER:http.response.body.bytes} \"%{DATA:http.request.referrer}\" \"%{GREEDYDATA:user_agent.original}\""
+        ],
+        "ignore_failure": true
+      }
+    },
+    {
+      "geoip": {
+        "field": "client.ip",
+        "target_field": "client.geo",
+        "ignore_missing": true
+      }
+    },
+    {
+      "user_agent": {
+        "field": "user_agent.original",
+        "ignore_missing": true
+      }
+    }
+  ]
+}

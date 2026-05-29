@@ -1,0 +1,12 @@
+{
+  "description": "Enriquecimiento geoIP (M07) sobre client.ip",
+  "processors": [
+    {
+      "geoip": {
+        "field": "client.ip",
+        "target_field": "client.geo",
+        "ignore_missing": true
+      }
+    }
+  ]
+}
