@@ -1,0 +1,12 @@
+# Arnés local del agente (no publicar)
+.agent/
+
+# Entradas de diseño solo locales (copias en .agent/diseno/)
+AGENTS.md
+briefing.md
+temario.md
+propuesta.md
+curso.meta.json
+
+# Entorno local
+infra/.env

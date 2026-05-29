@@ -1,0 +1,23 @@
+filebeat.inputs:
+  - type: filestream
+    id: lab-app-logs
+    enabled: true
+    paths:
+      - /var/log/lab/*.log
+    fields:
+      log.source: demo-app
+      course.module: M02-M03
+    fields_under_root: true
+
+processors:
+  - add_host_metadata: ~
+  - add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+
+setup.kibana:
+  host: "http://kibana:5601"
+
+setup.dashboards.enabled: false
+setup.ilm.enabled: true
