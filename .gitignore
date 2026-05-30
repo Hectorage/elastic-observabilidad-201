@@ -10,3 +10,4 @@ curso.meta.json
 
 # Entorno local
 infra/.env
+infra/samples/logs/app.log

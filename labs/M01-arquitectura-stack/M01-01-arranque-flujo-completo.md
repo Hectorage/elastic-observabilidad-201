@@ -125,13 +125,53 @@ En `_source.message` deberías reconocer el mismo texto (o muy similar) que vist
 
 ### Paso 7 — Ver el mismo flujo en Kibana (visualizar)
 
-1. En Codespaces, abre el puerto **5601** (pestaña *Ports* → globo).
-2. Menú ☰ → **Analytics** → **Discover**.
-3. Crea o selecciona un data view `filebeat-*` con campo de tiempo `@timestamp`.
-4. Filtra (KQL): `log.source : "demo-app"`.
-5. Abre el documento más reciente y localiza `message`, `host.name`, `agent.type`.
+Guía detallada con capturas de referencia: [docs/guia-kibana-discover-data-view.md](../../docs/guia-kibana-discover-data-view.md).
 
-Comprueba que el contador de documentos en Discover crece: espera 30 s y pulsa refrescar (o vuelve a ejecutar `_count` en terminal).
+**7a — Comprobar Kibana y datos**
+
+```bash
+curl -fsS http://localhost:5601/api/status 2>/dev/null | head -c 200; echo
+curl -fsS 'http://localhost:9200/filebeat-*/_count'
+```
+
+**7b — Abrir la UI**
+
+1. Codespaces → pestaña **Ports** → puerto **5601** → **Open in Browser** (globo).
+2. Si ves *Connecting to the forwarded port…*, espera 30–60 s y recarga.
+
+**7c — Ir a Discover**
+
+1. Menú **☰** (arriba izquierda) → **Analytics** → **Discover**.
+
+**7d — Crear el data view** (primera vez)
+
+Un **data view** le dice a Kibana qué índices leer y qué campo usar como tiempo. Sin él, Discover no muestra nada.
+
+1. Clic en **Create data view** / *Crear data view* (si ya hay data views, usa el desplegable arriba a la izquierda → **Create data view**).
+2. Rellena:
+
+   | Campo | Valor |
+   |-------|-------|
+   | Index pattern | `filebeat-*` |
+   | Timestamp field | `@timestamp` |
+
+3. **Save data view to Kibana**.
+
+   ![Referencia: pantalla Create data view](../../docs/imagenes/kibana/kibana-crear-data-view.png)
+
+   Si no aparece `@timestamp` o el patrón no coincide con ningún índice, vuelve al paso 5: Filebeat aún no ha indexado.
+
+**7e — Ver los eventos de loggen**
+
+1. **Time picker** (arriba): **Last 15 minutes** o **Last 1 hour** (los logs son recientes; un rango vacío o muy antiguo deja la tabla en blanco).
+2. Barra KQL: `log.source : "demo-app"` → Enter.
+3. Abre el documento más reciente; localiza `message`, `host.name`, `agent.type`.
+
+   ![Referencia: Discover con eventos](../../docs/imagenes/kibana/kibana-discover-con-eventos.png)
+
+**7f — Confirmar que el flujo sigue vivo**
+
+Espera 30 s → **Refresh** en Discover (o repite `_count` en terminal). El contador debe subir mientras `lab-loggen` corre.
 
 ---
 
