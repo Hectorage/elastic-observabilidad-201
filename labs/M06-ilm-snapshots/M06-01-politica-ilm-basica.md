@@ -21,6 +21,10 @@ curl -fsS 'http://localhost:9200/_ilm/policy/lab-hot-warm-delete?pretty'
 
 Kibana → **Stack Management** → **Index Lifecycle Policies** → abre `lab-hot-warm-delete`.
 
+![Lista de políticas ILM — captura real](../../docs/imagenes/kibana/kibana-ilm-policies-list.png)
+
+![Política `lab-hot-warm-delete` (hot / warm / delete) — captura real](../../docs/imagenes/kibana/kibana-ilm-policy-lab-hot-warm-delete.png)
+
 Compara hot (rollover 1gb/7d) vs warm (1 min en lab) vs delete (5 min).
 
 ---

@@ -15,6 +15,8 @@ curl -fsS 'http://localhost:9200/_cat/indices/lab-ilm-demo*?v'
 curl -fsS 'http://localhost:9200/lab-ilm-demo-*/_ilm/explain?pretty' | grep -E '"phase"|"action"|"step"' | head -20
 ```
 
+En paralelo puedes refrescar **Index Management** filtrando `lab-ilm-demo` (columna *Lifecycle phase*): [captura de referencia](../../docs/imagenes/kibana/kibana-index-management-ilm-indices.png).
+
 ---
 
 ### Paso 2 — Esperar fase delete

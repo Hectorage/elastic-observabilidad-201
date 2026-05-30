@@ -11,6 +11,8 @@ curso.meta.json
 # Entorno local
 infra/.env
 infra/samples/logs/app.log
+infra/snapshots/*
+!infra/snapshots/.gitkeep
 
 # Dependencias de scripts de captura (npm install en raíz)
 node_modules/

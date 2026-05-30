@@ -46,6 +46,12 @@ Salida esperada: `"state":"SUCCESS"`.
 curl -fsS 'http://localhost:9200/_snapshot/lab_fs/_all?pretty'
 ```
 
+Kibana → **Stack Management** → **Snapshot and Restore**:
+
+![Repositorios — `lab_fs` — captura real](../../docs/imagenes/kibana/kibana-snapshot-repositories.png)
+
+![Snapshot `snap-lab-ilm-1` SUCCESS — captura real](../../docs/imagenes/kibana/kibana-snapshots-list.png)
+
 ---
 
 ### Paso 4 — Restaurar (simulación, no ejecutar en prod)

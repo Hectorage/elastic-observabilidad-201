@@ -23,3 +23,5 @@
 ```bash
 ./scripts/setup-ilm-lab.sh
 ```
+
+Capturas Kibana (ILM y snapshots): [docs/imagenes/](../../docs/imagenes/README.md)

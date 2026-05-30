@@ -70,8 +70,8 @@ async function ensureLabSmoke() {
   return ensureDataView('lab-smoke', 'lab-smoke');
 }
 
-async function goto(page, url, waitMs = 5000) {
-  await page.goto(url, { waitUntil: 'networkidle2', timeout: 120_000 });
+async function goto(page, url, waitMs = 5000, waitUntil = 'networkidle2') {
+  await page.goto(url, { waitUntil, timeout: 120_000 });
   await sleep(waitMs);
 }
 
@@ -172,6 +172,54 @@ async function openDiscover(page, dataViewName, kql, timeLabel = 'Last 15 minute
   }
 }
 
+async function ensureIlmLabData() {
+  const { execSync } = await import('node:child_process');
+  try {
+    execSync('./scripts/setup-ilm-lab.sh', { cwd: path.join(__dirname, '..'), stdio: 'pipe' });
+  } catch {
+    /* ya aplicado */
+  }
+  await fetch(`${ES}/lab-ilm-demo-000001`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      aliases: { 'lab-ilm-demo': { is_write_index: true } },
+      settings: { number_of_shards: 1, number_of_replicas: 0 },
+    }),
+  });
+  await fetch(`${ES}/lab-ilm-demo/_doc`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'ilm lab capture',
+      '@timestamp': new Date().toISOString(),
+    }),
+  });
+  await fetch(`${ES}/_snapshot/lab_fs`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'fs',
+      settings: { location: '/usr/share/elasticsearch/snapshots', compress: true },
+    }),
+  });
+  await fetch(`${ES}/_snapshot/lab_fs/snap-lab-ilm-1?wait_for_completion=true`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ indices: 'lab-ilm-demo-*', include_global_state: false }),
+  });
+}
+
+async function filterIndexManagement(page, term) {
+  const search = await page.$(
+    '[data-test-subj="indexTableSearchBox"], [placeholder*="Search"], input[type="search"]'
+  );
+  if (search) {
+    await search.click({ clickCount: 3 });
+    await page.keyboard.type(term);
+    await sleep(3000);
+  }
+}
 async function expandFirstDiscoverRow(page) {
   // Clic en la primera fila de documentos (columna Summary)
   const clicked = await page.evaluate(() => {
@@ -209,6 +257,8 @@ async function main() {
   await mkdir(OUT, { recursive: true });
   await ensureDataView('filebeat-*', 'filebeat-logs');
   await ensureLabSmoke();
+
+  await ensureIlmLabData();
 
   const browser = await puppeteer.launch({
     executablePath: CHROME,
@@ -248,6 +298,32 @@ async function main() {
 
   await goto(page, `${BASE}/app/management/data/index_management/indices`);
   await shot(page, 'kibana-index-management');
+
+  // M06 — ILM y snapshots
+  await goto(page, `${BASE}/app/management/data/index_lifecycle_management/policies`, 6000);
+  await dismissToasts(page);
+  await shot(page, 'kibana-ilm-policies-list');
+
+  await goto(
+    page,
+    `${BASE}/app/management/data/index_lifecycle_management/policies/edit/lab-hot-warm-delete`,
+    6000
+  );
+  await dismissToasts(page);
+  await shot(page, 'kibana-ilm-policy-lab-hot-warm-delete');
+
+  await goto(page, `${BASE}/app/management/data/index_management/indices`, 5000, 'domcontentloaded');
+  await dismissToasts(page);
+  await filterIndexManagement(page, 'lab-ilm-demo');
+  await shot(page, 'kibana-index-management-ilm-indices');
+
+  await goto(page, `${BASE}/app/management/data/snapshot_restore/repositories`, 6000, 'domcontentloaded');
+  await dismissToasts(page);
+  await shot(page, 'kibana-snapshot-repositories');
+
+  await goto(page, `${BASE}/app/management/data/snapshot_restore/snapshots`, 6000, 'domcontentloaded');
+  await dismissToasts(page);
+  await shot(page, 'kibana-snapshots-list');
 
   await goto(page, `${BASE}/app/lens`, 8000);
   await dismissToasts(page);

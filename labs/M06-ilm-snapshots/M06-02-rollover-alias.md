@@ -44,6 +44,10 @@ curl -fsS 'http://localhost:9200/_cat/indices/lab-ilm-demo*?v'
 
 Salida esperada: al menos dos índices `lab-ilm-demo-000001` y `000002`.
 
+En Kibana → **Index Management**, filtra `lab-ilm-demo` para ver los backing indices y la política ILM enlazada:
+
+![Index Management — índices `lab-ilm-demo-*` — captura real](../../docs/imagenes/kibana/kibana-index-management-ilm-indices.png)
+
 ---
 
 ### Paso 4 — ILM explain
