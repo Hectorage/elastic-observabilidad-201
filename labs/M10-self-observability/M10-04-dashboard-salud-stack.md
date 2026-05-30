@@ -40,6 +40,8 @@ Tres métricas Lens desde `filebeat-*`, `metricbeat-*`, `auditbeat-*` count últ
 
 Dashboard `lab-m10-stack-health` + enlace al runbook [TROUBLESHOOTING.md](../TROUBLESHOOTING.md).
 
+![Biblioteca de dashboards — captura real](../../docs/imagenes/kibana/kibana-dashboards-list.png)
+
 ---
 
 ## Validación

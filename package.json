@@ -1,0 +1,27 @@
+{
+  "name": "elastic-stack-observabilidad-lab-first",
+  "version": "1.0.0",
+  "description": "Curso **100 % laboratorio** para montar y operar un stack ELK en Docker: Elasticsearch, Kibana, Beats, Logstash, ILM, alertas e integraciones.   Versión del stack: **8.17.2** · Entorno: **GitHub Codespaces** + fork de este repo.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "capture-screenshots": "node scripts/capture-kibana-screenshots.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/my-it-labs/elastic-observabilidad-201.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/my-it-labs/elastic-observabilidad-201/issues"
+  },
+  "homepage": "https://github.com/my-it-labs/elastic-observabilidad-201#readme"
+}

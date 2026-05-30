@@ -42,6 +42,8 @@ Guardar como `lab-m05-latency-avg`.
 
 **Dashboards** → **Create dashboard** → añade los tres paneles → **Save** como `lab-m05-ops-logs`.
 
+![Biblioteca de dashboards — captura real](../../docs/imagenes/kibana/kibana-dashboards-list.png)
+
 Anota la URL (incluye el id del objeto).
 
 ---

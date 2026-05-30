@@ -125,7 +125,7 @@ En `_source.message` deberías reconocer el mismo texto (o muy similar) que vist
 
 ### Paso 7 — Ver el mismo flujo en Kibana (visualizar)
 
-Guía detallada con capturas de referencia: [docs/guia-kibana-discover-data-view.md](../../docs/guia-kibana-discover-data-view.md).
+Guía detallada con capturas reales del stack: [docs/guia-kibana-discover-data-view.md](../../docs/guia-kibana-discover-data-view.md) · [catálogo de imágenes](../../docs/imagenes/README.md).
 
 **7a — Comprobar Kibana y datos**
 
@@ -157,7 +157,7 @@ Un **data view** le dice a Kibana qué índices leer y qué campo usar como tiem
 
 3. **Save data view to Kibana**.
 
-   ![Referencia: pantalla Create data view](../../docs/imagenes/kibana/kibana-crear-data-view.png)
+   ![Create data view — captura real del stack 8.17.2](../../docs/imagenes/kibana/kibana-crear-data-view.png)
 
    Si no aparece `@timestamp` o el patrón no coincide con ningún índice, vuelve al paso 5: Filebeat aún no ha indexado.
 
@@ -171,7 +171,7 @@ Un **data view** le dice a Kibana qué índices leer y qué campo usar como tiem
    - Clic en **`>`** a la izquierda de una fila (el detalle se abre **debajo** de la fila, no siempre hay panel derecho).
    - O en la barra **izquierda** (*Available fields*): añade `host.name` y `agent.type` con **`+`** como columnas.
 
-   ![Referencia aproximada — el layout puede variar en 8.17](../../docs/imagenes/kibana/kibana-discover-con-eventos.png)
+   ![Discover con eventos `demo-app` — captura real](../../docs/imagenes/kibana/kibana-discover-con-eventos.png)
 
 **7f — Confirmar que el flujo sigue vivo**
 

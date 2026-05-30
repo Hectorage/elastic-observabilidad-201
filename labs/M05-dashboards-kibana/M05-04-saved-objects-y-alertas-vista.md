@@ -12,6 +12,8 @@
 
 **Stack Management** → **Saved Objects** → selecciona tus visualizaciones y dashboards `lab-m05-*` → **Export** → descarga `lab-m05-export.ndjson`.
 
+![Saved Objects — captura real](../../docs/imagenes/kibana/kibana-saved-objects.png)
+
 Guárdalo en `labs/M05-dashboards-kibana/` solo si tu formador lo pide (no es obligatorio commitear).
 
 ---
@@ -19,6 +21,8 @@ Guárdalo en `labs/M05-dashboards-kibana/` solo si tu formador lo pide (no es ob
 ### Paso 2 — Regla de umbral (Kibana)
 
 **Observability** → **Alerts** → **Create rule** → **Elasticsearch query**:
+
+![Observability → Alerts — captura real](../../docs/imagenes/kibana/kibana-observability-alerts.png)
 
 - Índice: `filebeat-*`
 - Query: `log_source : "demo-app" and http.response.status_code : 500` (o KQL equivalente)

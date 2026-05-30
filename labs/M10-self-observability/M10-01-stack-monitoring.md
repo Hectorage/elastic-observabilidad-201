@@ -12,7 +12,9 @@
 
 Kibana → **Stack Management** → **Stack Monitoring** (o **Monitoring** en menú).
 
-Si pide habilitar collection interna, sigue el asistente (en lab single-node puede ser limitado).
+![Stack Monitoring — captura real (estado inicial sin Metricbeat de monitoring)](../../docs/imagenes/kibana/kibana-stack-monitoring.png)
+
+Si pide habilitar collection interna, sigue el asistente (en lab single-node puede ser limitado). La captura muestra el estado **sin datos de monitoring** hasta que lo configures.
 
 ---
 

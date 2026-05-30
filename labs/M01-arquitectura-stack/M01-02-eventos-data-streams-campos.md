@@ -80,6 +80,8 @@ En **M06** verás por qué los data streams encajan mejor con ILM; aquí solo co
 
 En Kibana Discover (`filebeat-*`):
 
+![Discover con filtros KQL — captura real del stack](../../docs/imagenes/kibana/kibana-discover-con-eventos.png)
+
 1. `log_source : "demo-app" and message : *ERROR*` — solo errores de la app demo.
 2. `log_source : "demo-app" and message : *status=500*` — respuestas HTTP 500.
 3. Cambia el data view a `lab-contrato` (créalo si hace falta) y busca `message : "contrato manual"`.

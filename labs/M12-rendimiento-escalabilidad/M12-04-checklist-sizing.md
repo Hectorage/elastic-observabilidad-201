@@ -78,6 +78,9 @@ Exporta un dashboard NDJSON de M05 o M10 y compártelo con un compañero import�
 **Exportar**
 
 1. Kibana → ☰ → **Management** → **Stack Management** → **Saved Objects**.
+
+   ![Saved Objects — captura real](../../docs/imagenes/kibana/kibana-saved-objects.png)
+
 2. Marca el dashboard (y dependencias si Kibana lo ofrece).
 3. **Export** → descarga `.ndjson`.
 

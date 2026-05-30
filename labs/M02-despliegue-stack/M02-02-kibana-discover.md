@@ -41,6 +41,8 @@ Repite cada 20 s hasta ver `available` o similar en el JSON.
 4. Ampliar el time picker a **Last 1 year** (el smoke tiene fecha fija).
 5. Filtro KQL: `course.exercise : "M02-01"`.
 
+![Discover con data view `lab-smoke` — captura real](../../docs/imagenes/kibana/kibana-discover-lab-smoke.png)
+
 Debes ver el documento del paso 4 de M02-01. Si no aparece:
 
 ```bash
@@ -54,6 +56,8 @@ Si `curl` sí lo ve y Discover no → problema de data view o rango de tiempo, n
 ### Paso 4 — Stack Management: el índice físico
 
 ☰ → **Management** → **Stack Management** → **Index Management**.
+
+![Index Management — captura real](../../docs/imagenes/kibana/kibana-index-management.png)
 
 Confirma el índice `lab-smoke` con al menos 1 documento.
 

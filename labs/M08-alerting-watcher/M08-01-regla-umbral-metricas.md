@@ -18,6 +18,8 @@
 
 **Alerts** → **Create rule** → **Metric threshold**:
 
+![Rules en Stack Management — captura real](../../docs/imagenes/kibana/kibana-alerting-rules.png)
+
 - Metric: average `docker.cpu.total.pct`
 - Group by: `container.name`
 - Threshold: **above 0.5** (ajusta: 50 % si el campo es 0–1)

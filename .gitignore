@@ -11,3 +11,7 @@ curso.meta.json
 # Entorno local
 infra/.env
 infra/samples/logs/app.log
+
+# Dependencias de scripts de captura (npm install en raíz)
+node_modules/
+package-lock.json

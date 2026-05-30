@@ -2,6 +2,8 @@
 
 Guía visual para el **paso 7 de M01-01** y cualquier ejercicio que use Discover. No asume que hayas usado Kibana antes.
 
+> Capturas **reales** del stack 8.17.2 local. Catálogo completo: [imagenes/README.md](imagenes/README.md). Regenerar: `npm run capture-screenshots`.
+
 > **Data view** (antes *index pattern*): nombre lógico que apunta a uno o más índices o data streams en Elasticsearch (p. ej. `filebeat-*`). Discover no muestra documentos hasta que exista al menos uno con campo de tiempo.
 
 Documentación oficial: [Data views](https://www.elastic.co/docs/explore-analyze/data-visualization/data-views) · [Discover](https://www.elastic.co/docs/explore-analyze/discover).
@@ -38,7 +40,7 @@ URL típica: `https://….app.github.dev` (puerto 5601 reenviado). No uses `loca
 1. Clic en el menú **☰** (arriba a la izquierda).
 2. Sección **Analytics** → **Discover**.
 
-![Discover sin data view — botón Create a data view](imagenes/kibana/kibana-discover-sin-data-view.png)
+![Discover sin data view — captura real del stack 8.17.2](imagenes/kibana/kibana-discover-sin-data-view.png)
 
 **Qué verás**
 
@@ -60,9 +62,11 @@ Clic en **Create a data view**.
 
 ☰ → **Management** → **Stack Management** → **Kibana** → **Data Views** → **Create data view**.
 
+![Lista de data views — captura real](imagenes/kibana/kibana-data-views-list.png)
+
 ### Rellenar el formulario
 
-![Formulario Create data view](imagenes/kibana/kibana-crear-data-view.png)
+![Formulario Create data view — captura real del stack 8.17.2](imagenes/kibana/kibana-crear-data-view.png)
 
 | Campo | Valor | Notas |
 |-------|-------|-------|
@@ -78,7 +82,7 @@ Si Kibana avisa de que no hay coincidencias: vuelve a terminal y confirma `_coun
 
 ## 4 — Ver eventos en Discover
 
-![Discover con eventos y filtro KQL](imagenes/kibana/kibana-discover-con-eventos.png)
+![Discover con eventos y filtro KQL — captura real](imagenes/kibana/kibana-discover-con-eventos.png)
 
 1. **Selector de data view** (arriba izquierda): elige el que acabas de crear.
 2. **Time picker** (arriba, calendario / *Last 15 minutes*): elige **Last 15 minutes** o **Last 1 hour**.  
@@ -97,6 +101,8 @@ Si Kibana avisa de que no hay coincidencias: vuelve a terminal y confirma `_coun
    | **Documento completo** | Con la fila expandida, pestaña **JSON** o **Table** (según versión) para ver todos los campos. |
 
    Localiza al menos: `message`, `log_source`, `host.name`, `agent.type`.
+
+   ![Discover — tabla de documentos (captura real; expande una fila con la flecha `>`)](imagenes/kibana/kibana-discover-fila-expandida.png)
 
 Compara el `message` con la última línea de `tail infra/samples/logs/app.log` del paso 6.
 

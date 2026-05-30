@@ -30,7 +30,7 @@
 docker compose -f infra/docker-compose.yml --profile beats up -d
 ```
 
-**Referencia:** [docs/componentes/](../../docs/componentes/README.md)
+**Referencia:** [docs/componentes/](../../docs/componentes/README.md) · Capturas Kibana: [docs/imagenes/](../../docs/imagenes/README.md)
 
 ## Antes de seguir (cierre M03)
 

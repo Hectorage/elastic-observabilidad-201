@@ -23,6 +23,9 @@ Kibana → **Discover** → data view `filebeat-*` → `log_source : "demo-app"`
 
 1. Con el filtro activo, menú **Inspect** o **Open in Lens** (según build: *Visualize* / *Explore in Lens*).
 2. Tipo sugerido: **Vertical bar** o **Donut**.
+
+![Editor Lens — captura real del stack](../../docs/imagenes/kibana/kibana-lens-editor.png)
+
 3. Métrica: **Count of records**.
 4. Dimensión: `http.response.status_code` (si no existe, usa **Runtime field** o divide por `message : *status=500*` con filtros separados).
 
