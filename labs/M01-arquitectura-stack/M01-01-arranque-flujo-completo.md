@@ -42,14 +42,32 @@ Salida esperada: `STACK_VERSION=8.17.2` y Docker Compose v2.
 
 El repo incluye Elasticsearch, Kibana, un generador de logs (`loggen`), Filebeat, Metricbeat y Auditbeat en `infra/docker-compose.yml`. Referencia: [docs/componentes/](../../docs/componentes/README.md).
 
+`loggen`, Filebeat, Metricbeat y Auditbeat están en el perfil compose **`beats`**. Sin ese flag solo arrancan Elasticsearch y Kibana; los pasos 6–7 **no funcionarán** (no existirá `app.log` ni el contenedor `lab-filebeat`).
+
 ```bash
 docker compose -f infra/docker-compose.yml --profile beats up -d
-docker compose -f infra/docker-compose.yml ps
+docker compose -f infra/docker-compose.yml --profile beats ps
 ```
 
-Espera 2–3 minutos la primera vez. Elasticsearch debe pasar a `healthy` y Kibana a `Up`.
+Espera 2–3 minutos la primera vez. Salida esperada en `ps` (6 contenedores):
 
-Si algo falla: [TROUBLESHOOTING](../TROUBLESHOOTING.md).
+```text
+lab-elasticsearch   Up (healthy)
+lab-kibana          Up
+lab-loggen          Up
+lab-filebeat        Up
+lab-metricbeat      Up
+lab-auditbeat       Up
+```
+
+Comprueba que `loggen` ya creó el fichero de log (no viene en el repo; lo genera el contenedor al arrancar):
+
+```bash
+ls -la infra/samples/logs/app.log
+tail -2 infra/samples/logs/app.log
+```
+
+Si `app.log` no existe o faltan contenedores `lab-loggen` / `lab-filebeat`, no sigas: revisa que el comando `up` incluía **`--profile beats`** y vuelve a ejecutarlo. Si algo falla: [TROUBLESHOOTING](../TROUBLESHOOTING.md).
 
 ---
 
@@ -59,7 +77,7 @@ Si algo falla: [TROUBLESHOOTING](../TROUBLESHOOTING.md).
 ./scripts/health-check.sh
 ```
 
-Debes ver `status: green` o `yellow` y contadores `filebeat-*` > 0 tras un minuto.
+Debes ver `status: green` o `yellow`, contenedores `lab-loggen` y `lab-filebeat` en la sección Docker, y contadores `filebeat-*` > 0 tras un minuto.
 
 ---
 
@@ -68,15 +86,18 @@ Debes ver `status: green` o `yellow` y contadores `filebeat-*` > 0 tras un minut
 ```bash
 curl -fsS 'http://localhost:9200/_cluster/health?pretty' | grep -E 'cluster_name|status|number_of_nodes'
 curl -fsS 'http://localhost:9200/filebeat-*/_count'
+docker compose -f infra/docker-compose.yml --profile beats ps loggen filebeat
 ```
 
-Anota el `count` de Filebeat; lo usarás en el paso 7.
+Anota el `count` de Filebeat; lo usarás en el paso 7. Si `_count` es 0, espera 30–60 s (Filebeat arranca tras Elasticsearch healthy) y repite. Si sigue en 0, revisa `docker logs lab-filebeat`.
 
 ---
 
 ### Paso 6 — Seguir UN evento en la terminal (recolectar → almacenar)
 
-**6a — Origen:** el contenedor `lab-loggen` escribe líneas en `infra/samples/logs/app.log`:
+> Requisito: pasos 3–5 con **`--profile beats`**. `lab-loggen` y `lab-filebeat` deben estar `Up` y `infra/samples/logs/app.log` debe existir.
+
+**6a — Origen:** el contenedor `lab-loggen` escribe líneas en ese fichero (creado al arrancar loggen, no versionado en Git):
 
 ```bash
 tail -3 infra/samples/logs/app.log
@@ -90,7 +111,7 @@ Copia mentalmente la última línea (nivel `INFO`, `WARN` o `ERROR`, `path=...`,
 docker logs lab-filebeat --tail 5
 ```
 
-Busca una línea sin error de conexión (publish/events OK).
+Busca una línea sin error de conexión (publish/events OK). Si el contenedor no existe, vuelve al paso 3 y confirma `--profile beats`.
 
 **6c — Almacén:** recupera el último documento indexado:
 

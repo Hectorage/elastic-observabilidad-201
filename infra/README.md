@@ -6,9 +6,10 @@ Stack Docker Compose para **Elastic Stack Observabilidad Lab First** (edición `
 
 ```bash
 cp .env.example .env
-docker compose up -d                          # Elasticsearch + Kibana
-docker compose --profile beats up -d          # + loggen, Filebeat, Metricbeat, Auditbeat
+docker compose --profile beats up -d   # ES + Kibana + loggen + Beats (M01-01 y siguientes)
 ```
+
+Solo Elasticsearch + Kibana (sin ingesta): `docker compose up -d` (sin perfil `beats`).
 
 Desde la raíz del repo:
 

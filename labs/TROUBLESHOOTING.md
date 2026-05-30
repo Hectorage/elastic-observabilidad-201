@@ -24,6 +24,7 @@ Matriz de síntomas → causa probable → acción. Empieza siempre por `./scrip
 
 | Síntoma | Causa probable | Acción |
 |---------|----------------|--------|
+| `app.log` no existe; `lab-loggen` / `lab-filebeat` no aparecen en `ps` | Arranque sin perfil `beats` (solo ES + Kibana) | `docker compose -f infra/docker-compose.yml --profile beats up -d` y verifica los 6 contenedores. |
 | `filebeat-*/_count` = 0 | Filebeat no arrancó o no lee ficheros | `docker logs lab-filebeat`; revisa paths y volumen `samples/logs`. |
 | Hay docs pero Discover vacío | Rango de tiempo del selector | Amplía el time picker (p. ej. *Last 1 year* para el smoke test). |
 | No existe el data view | Falta crear el index pattern | Crea data view `filebeat-*` con `@timestamp`. |
