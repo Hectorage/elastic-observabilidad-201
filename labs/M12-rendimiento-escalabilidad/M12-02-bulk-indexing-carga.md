@@ -4,7 +4,9 @@
 
 > ⏱️ ~40 min
 
-**Objetivo:** indexar 5 000 docs con `_bulk` y observar impacto en heap.
+**Objetivo:** indexar 5 000 docs con `_bulk` y observar impacto en heap y tiempo.
+
+> **Bulk es el camino de producción:** Beats y Logstash envían batches, no documentos sueltos. Entender throughput y presión de heap guía sizing de nodos y tamaño de lote.
 
 ---
 
@@ -14,9 +16,13 @@
 curl -fsS 'http://localhost:9200/_nodes/stats/jvm?filter_path=nodes.*.jvm.mem.heap.used_percent'
 ```
 
+Anota `%` — referencia para paso 3.
+
 ---
 
 ### Paso 2 — Bulk 5000
+
+El script indexa 5000 docs en **una** petición NDJSON — agresivo para lab, instructivo para ver latencia:
 
 ```bash
 python3 <<'PY'
@@ -35,25 +41,35 @@ PY
 curl -fsS 'http://localhost:9200/lab-perf-bulk/_count'
 ```
 
+Anota **elapsed** segundos. En prod:
+
+| Tuning | Efecto |
+|--------|--------|
+| `refresh=false` en bulk | Mayor throughput |
+| Lotes 5–15 MB | Equilibrio latencia/memoria |
+| Pipeline async | Menos presión en coordinador |
+
 ---
 
-### Paso 3 — Heap después + refresh
+### Paso 3 — Heap después + merge (opcional)
 
 ```bash
 curl -fsS -X POST 'http://localhost:9200/lab-perf-bulk/_forcemerge?max_num_segments=1' 2>/dev/null || true
 curl -fsS 'http://localhost:9200/_nodes/stats/jvm?filter_path=nodes.*.jvm.mem.heap.used_percent'
 ```
 
+¿Subió heap >10 puntos? forcemerge en lab es didáctico — en prod se planifica en ventana de mantenimiento.
+
 ---
 
 ## Validación
 
-- [ ] 5000 docs indexados.
+- [ ] 5000 docs indexados (`_count`).
 - [ ] Tiempo total anotado.
-- [ ] Heap comparado antes/después.
+- [ ] Heap antes/después comparado con interpretación.
 
 ---
 
 ## Antes de seguir
 
-Bulk con `refresh=false` y tamaño de lote 5–15 MB mejora throughput en prod.
+Bulk mal dimensionado satura heap y dispara rejections (M12-03). Beats ya batching — tú replicas con `_bulk` para pruebas de carga.

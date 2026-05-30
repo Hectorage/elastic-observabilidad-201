@@ -43,6 +43,8 @@ Repite cada 20 s hasta ver `available` o similar en el JSON.
 
 ![Discover con data view `lab-smoke` — captura real](../../docs/imagenes/kibana/kibana-discover-lab-smoke.png)
 
+**Por qué «Last 1 year»:** el documento de M02-01 tiene `@timestamp` fijo (2025-01). Discover filtra por tiempo **antes** de mostrar filas — con «Last 15 minutes» parecería que no hay datos aunque ES tenga el doc. Este es el error #1 en soporte: «curl ve datos, Kibana no».
+
 Debes ver el documento del paso 4 de M02-01. Si no aparece:
 
 ```bash
@@ -76,6 +78,14 @@ docker compose -f infra/docker-compose.yml start elasticsearch
 ```
 
 Tras `healthy`, Discover vuelve a funcionar. **Kibana depende de ES; nunca al revés.**
+
+| Componente caído | ¿Siguen entrando logs a ES? | ¿Carga Kibana? |
+|------------------|----------------------------|----------------|
+| Elasticsearch | No (Beats acumulan o fallan) | No / error |
+| Kibana | Sí | No |
+| Filebeat | No nuevos | Sí (datos viejos) |
+
+En producción separarías «incidente de visualización» (Kibana) de «incidente de ingesta» (Beats/ES) — aquí lo compruebas en miniatura.
 
 ---
 

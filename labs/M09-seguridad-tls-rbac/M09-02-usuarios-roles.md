@@ -6,9 +6,13 @@
 
 **Objetivo:** rol `lab_logs_reader` que solo lee `filebeat-*` y usuario `lab_analyst`.
 
+> **Principio de mínimo privilegio:** el analista de logs de aplicación no necesita ver métricas de infra ni índices de auditoría. Roles estrechos limitan impacto de credencial filtrada.
+
 ---
 
 ### Paso 1 — Rol
+
+Define privilegios sobre índices **y** Kibana (sin Kibana read, el usuario no entra a Discover):
 
 ```bash
 source infra/.env
@@ -27,6 +31,12 @@ curl -fsS -u "elastic:${ELASTIC_PASSWORD}" -X POST 'http://localhost:9200/_secur
 }'
 ```
 
+| Privilegio | Permite |
+|------------|---------|
+| `read` | `_search`, `_count` en filebeat |
+| `view_index_metadata` | Ver mapping en Stack Management |
+| Kibana `read` | Abrir Discover/dashboards (no editar) |
+
 ---
 
 ### Paso 2 — Usuario
@@ -41,6 +51,8 @@ curl -fsS -u "elastic:${ELASTIC_PASSWORD}" -X POST 'http://localhost:9200/_secur
 }'
 ```
 
+**Producción:** contraseña generada, MFA vía SSO, rotación al cambiar de puesto.
+
 ---
 
 ### Paso 3 — Probar acceso
@@ -50,24 +62,29 @@ curl -fsS -u 'lab_analyst:LabAnalyst2026!' 'http://localhost:9200/filebeat-*/_co
 curl -fsS -u 'lab_analyst:LabAnalyst2026!' 'http://localhost:9200/metricbeat-*/_count'
 ```
 
-Salida esperada: filebeat OK; metricbeat **403**.
+Salida esperada: filebeat OK; metricbeat **403 Forbidden**.
+
+Documenta el error JSON del segundo curl — es la prueba de RBAC funcionando.
 
 ---
 
 ### Paso 4 — Login Kibana como analyst
 
-Ventana privada → `lab_analyst` → comprueba que Discover limita índices.
+Ventana privada → `lab_analyst` / `LabAnalyst2026!`.
+
+Comprueba: Discover muestra `filebeat-*`; intentar abrir índice metricbeat debería fallar o no listarse. **Spaces** (Kibana) permitirían restringir dashboards por equipo — fuera de alcance del lab.
 
 ---
 
 ## Validación
 
 - [ ] Rol y usuario creados.
-- [ ] metricbeat denegado para analyst.
+- [ ] metricbeat denegado para analyst (403 en API).
 - [ ] filebeat permitido.
+- [ ] Puedes nombrar un segundo rol que crearías para equipo de infra (metricbeat only).
 
 ---
 
 ## Antes de seguir
 
-Principio de mínimo privilegio: un rol por equipo/función.
+Un rol por función (logs, metrics, admin). Evita rol «read everything» — derrota el propósito de M09.

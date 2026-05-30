@@ -14,7 +14,9 @@
 ## Contexto
 
 - M01–M03 envían Beats **directo** a Elasticsearch; M04 usa el override `infra/docker-compose.logstash.yml`.
-- Al terminar M04 puedes volver al compose base o seguir con pipelines de ingest en M07.
+- Cada ejercicio incluye **por qué** elegir Logstash vs ingest pipeline y tablas lab/prod.
+- Al terminar M04-04 **restaura** el pipeline 10 por defecto — M05+ asumen compose base.
+- M07 reutiliza la misma idea de parseo en ingest pipelines sobre logs web.
 
 ## Tabla de ejercicios
 

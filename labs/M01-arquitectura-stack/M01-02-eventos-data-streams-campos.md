@@ -130,7 +130,14 @@ En M03 profundizarás en cada Beat; aquí solo confirmas que **conviven** en el 
 
 ### Paso 7 — Referencia ECS (lectura corta, opcional)
 
-Compara tu documento del paso 1 con la tabla de campos en [ECS reference](https://www.elastic.co/docs/reference/ecs).
+ECS (Elastic Common Schema) estandariza nombres para que dashboards, alertas y equipos distintos hablen el mismo idioma. Un campo `host.name` en Filebeat significa lo mismo que en Metricbeat — eso permite correlacionar en M03.
+
+Compara tu documento del paso 1 con la tabla de campos en [ECS reference](https://www.elastic.co/docs/reference/ecs). Anota 3 campos que ya tenías sin saber que eran ECS (`@timestamp`, `host.name`, `agent.type` cuentan).
+
+| Tu campo en `_source` | Equivalente ECS | ¿Lo usarías en alerta/dashboard? |
+|-----------------------|-----------------|----------------------------------|
+| | | |
+| | | |
 
 Para data streams en profundidad: [Data streams](https://www.elastic.co/docs/manage-data/data-store/data-streams).
 

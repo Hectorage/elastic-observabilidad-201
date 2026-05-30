@@ -6,9 +6,13 @@
 
 **Objetivo:** aplicar el mismo parseo con un **ingest pipeline** de Elasticsearch y simular un documento con `_simulate`.
 
+> **Idea central:** la transformación puede vivir **en el nodo ES** (ingest pipeline) o **en Logstash** (contenedor aparte). Misma necesidad de negocio — distinto lugar de ejecución.
+
 ---
 
 ### Paso 1 — Volver a Filebeat directo (opcional pero recomendado)
+
+Aislar variables: si dejas Logstash activo, no sabes si parseó LS o el pipeline ES.
 
 ```bash
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.logstash.yml --profile beats --profile logstash down
@@ -19,14 +23,20 @@ docker compose -f infra/docker-compose.yml --profile beats up -d
 
 ### Paso 2 — Cargar pipelines del repo
 
+Los pipelines viven en Git (`infra/ingest-pipelines/`) y se aplican por API — patrón GitOps.
+
 ```bash
 ./scripts/apply-ingest-pipelines.sh
 curl -fsS 'http://localhost:9200/_ingest/pipeline/lab-parse-demo-app?pretty'
 ```
 
+Revisa en la salida processors `grok` / `convert` — equivalente funcional al Logstash de M04-02.
+
 ---
 
 ### Paso 3 — Simular sin indexar
+
+`_simulate` es tu «unit test» de pipeline: prueba JSON de entrada sin ensuciar índices.
 
 ```bash
 curl -fsS -H 'Content-Type: application/json' \
@@ -40,11 +50,13 @@ curl -fsS -H 'Content-Type: application/json' \
   }'
 ```
 
-Salida esperada: en `doc._source`, `http.response.status_code: 500`, `latency_ms: 420`.
+Salida esperada: en `doc._source`, `http.response.status_code: 500`, `latency_ms: 420`. Si hay `error` en la respuesta, el grok del pipeline no matcheó — ajusta patrón antes de indexar miles de docs.
 
 ---
 
 ### Paso 4 — Asociar pipeline al índice de prueba
+
+Tres formas de invocar pipeline en prod — aquí usas `default_pipeline` a nivel índice:
 
 ```bash
 curl -fsS -X PUT 'http://localhost:9200/lab-ingest-test' \
@@ -60,23 +72,29 @@ curl -fsS 'http://localhost:9200/lab-ingest-test/_search?pretty' \
   -d '{"size":1,"query":{"match_all":{}}}'
 ```
 
+El documento indexado debe mostrar campos parseados — no solo el `message` crudo.
+
 ---
 
-### Paso 5 — Tabla comparativa (rellena tú)
+### Paso 5 — Tabla comparativa (rellena con tus palabras)
 
 | Criterio | Logstash | Ingest pipeline |
 |----------|----------|-----------------|
-| Dónde corre | Contenedor LS | Nodo ES |
-| Ideal para | Fuentes múltiples, buffers | Parseo al indexar |
-| Operación extra | Sí (JVM Logstash) | No |
+| Dónde corre | Contenedor LS (JVM aparte) | Nodo ES (mismos recursos que indexación) |
+| Ideal para | Multiples fuentes, Kafka, buffers, outputs múltiples | Parseo al indexar, `_bulk`, Beats con `pipeline:` |
+| Operación extra | Sí — otro servicio que escalar/parchar | No — pero consume CPU del nodo ES |
+| `_simulate` | No (usa `stdout` o filtros debug) | Sí — nativo |
+| Tu caso lab checkout | ¿Cuál elegirías si solo hay Filebeat + parseo grok? | |
+
+**Regla práctica:** parseo simple + una fuente → ingest pipeline; orquestación pesada → Logstash.
 
 ---
 
 ## Validación
 
 - [ ] `_simulate` devuelve campos parseados.
-- [ ] Documento en `lab-ingest-test` con `status` 404.
-- [ ] Completada la tabla comparativa.
+- [ ] Documento en `lab-ingest-test` con status 404 parseado.
+- [ ] Tabla comparativa completada con criterio de elección.
 
 ---
 

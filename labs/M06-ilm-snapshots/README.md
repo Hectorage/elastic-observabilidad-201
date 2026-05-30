@@ -6,10 +6,12 @@
 
 ## Qué aprenderás
 
-- Definir políticas **ILM** (hot/warm/delete acelerado para lab).
-- Hacer **rollover** en índice con alias.
-- Registrar repositorio **snapshot** en filesystem.
-- Observar la fase **delete** en índice de prueba.
+- Definir políticas **ILM** (hot/warm/delete acelerado para lab) y relacionarlas con retención de negocio.
+- Hacer **rollover** en índice con alias (patrón previo a data streams).
+- Registrar repositorio **snapshot** como red de seguridad antes de delete.
+- Observar la fase **delete** y recuperar desde snapshot (opcional).
+
+> Los ejercicios van en cadena: política (M06-01) → datos y rollover (M06-02) → backup (M06-03) → delete y restore (M06-04). No saltes M06-03 si quieres hacer M06-04 con sentido.
 
 ## Tabla de ejercicios
 

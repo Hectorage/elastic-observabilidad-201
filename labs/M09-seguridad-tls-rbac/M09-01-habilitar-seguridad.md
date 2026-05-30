@@ -6,9 +6,13 @@
 
 **Objetivo:** levantar el stack con **xpack.security** y acceder con usuario `elastic`.
 
+> **Por qué:** en M01–M08 cualquiera con puerto 5601/9200 ve todos los datos. Producción exige **autenticación** (quién eres) y **autorización** RBAC (qué puedes ver). Security nativa es el baseline antes de LDAP/SSO (M09-04).
+
 ---
 
 ### Paso 1 — Variables
+
+Contraseñas en `.env` (nunca en Git). El compose de seguridad las inyecta a ES/Kibana.
 
 ```bash
 cp infra/.env.example infra/.env
@@ -17,7 +21,12 @@ cp infra/.env.example infra/.env
 # KIBANA_SYSTEM_PASSWORD=LabKibana2026!
 ```
 
-Añade esas líneas al `.env` si no están en el example — actualiza `.env.example` too.
+Añade esas líneas si no están en el example del repo.
+
+| Variable | Consumidor |
+|----------|------------|
+| `ELASTIC_PASSWORD` | Usuario `elastic`, bootstrap |
+| `KIBANA_SYSTEM_PASSWORD` | Kibana → ES interno |
 
 ---
 
@@ -29,7 +38,9 @@ docker compose -f infra/docker-compose.yml \
   -f infra/docker-compose.security.yml --profile beats up -d
 ```
 
-Espera 2–3 min. Si Kibana no arranca, ejecuta (una vez) el setup de contraseñas según doc 8.17 para `kibana_system`.
+Espera 2–3 min. Kibana necesita `kibana_system` con password válido — si la UI no arranca, revisa logs `lab-kibana` y doc 8.17 bootstrap.
+
+**Impacto en Beats:** Filebeat sin credenciales dejará de indexar — lo arreglarás en M09-03 checklist o ajustando yml.
 
 ---
 
@@ -40,11 +51,20 @@ source infra/.env
 curl -fsS -u "elastic:${ELASTIC_PASSWORD}" 'http://localhost:9200/_cluster/health?pretty'
 ```
 
+Compara:
+
+| Petición | Esperado |
+|----------|----------|
+| Sin `-u` | **401 Unauthorized** |
+| Con `elastic` | JSON health normal |
+
 ---
 
 ### Paso 4 — Kibana
 
 Abre http://localhost:5601 → login **elastic** / tu password.
+
+Discover debe seguir mostrando datos **si** Beats reconectaron con credenciales. Si vacío: distingue auth (401 en logs Beat) de falta de ingesta.
 
 ---
 
@@ -52,10 +72,10 @@ Abre http://localhost:5601 → login **elastic** / tu password.
 
 - [ ] Sin credenciales, `curl` devuelve 401.
 - [ ] Login Kibana OK.
-- [ ] Discover sigue mostrando datos tras reconfigurar Beats (puede requerir ajuste de credenciales en yml).
+- [ ] Entiendes qué componentes necesitan password (Kibana, Beats, tus scripts curl).
 
 ---
 
 ## Antes de seguir
 
-En producción rota passwords y usa secretos, no `.env` en Git.
+En producción: secret manager (Vault, K8s secrets), rotación periódica, usuario `elastic` solo break-glass — operadores usan cuentas nominativas (M09-02).

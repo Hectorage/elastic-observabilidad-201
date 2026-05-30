@@ -23,11 +23,20 @@ Solo debería existir `lab-smoke` (índice clásico).
 
 ### Paso 2 — Activar generador y Filebeat
 
+Revisa la config antes de arrancar — entender qué fichero vigila evita sorpresas en Discover:
+
 ```bash
 cat infra/filebeat/filebeat.yml
 docker compose -f infra/docker-compose.yml --profile beats up -d loggen filebeat
 docker compose -f infra/docker-compose.yml ps loggen filebeat
 ```
+
+| Contenedor | Función |
+|------------|---------|
+| `lab-loggen` | Escribe líneas en `infra/samples/logs/app.log` |
+| `lab-filebeat` | Tail del fichero → bulk a ES |
+
+Sin `loggen`, Filebeat no tiene líneas nuevas — mismo síntoma que perfil `beats` olvidado en M01.
 
 ---
 
@@ -59,12 +68,19 @@ El `message` de la API debe corresponder a una línea reciente de `app.log`.
 
 ### Paso 5 — Discover: dos familias de datos
 
-1. Data view **`filebeat-*`** (`@timestamp`).
+Kibana puede consultar **modelos distintos** en un solo clúster — no mezcles data views sin saber qué índice hay detrás.
+
+1. Data view **`filebeat-*`** (`@timestamp`) — time picker **Last 15 minutes**.
 2. Filtro: `log_source : "demo-app"`.
 3. Filtro: `message : *ERROR*` — debes ver errores (~10 % del tráfico del `loggen`).
-4. Cambia a data view **`lab-smoke`** — sigue existiendo el documento manual de M02-01.
+4. Cambia a data view **`lab-smoke`** — time picker **Last 1 year** — sigue existiendo el documento manual de M02-01.
 
-Ahora tienes **índice clásico** (`lab-smoke`) y **data stream** (`filebeat-*`) en el mismo clúster.
+| Data view | Modelo | Origen del dato |
+|-----------|--------|-----------------|
+| `lab-smoke` | Índice clásico | `curl` manual M02-01 |
+| `filebeat-*` | Data stream | Filebeat + loggen continuo |
+
+**Reflexión:** en prod conviven índices legacy y data streams durante migraciones — ILM (M06) trata cada uno según política.
 
 ---
 

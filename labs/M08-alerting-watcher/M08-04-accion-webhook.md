@@ -6,21 +6,26 @@
 
 **Objetivo:** extender el watch con acción **webhook** hacia un receptor de prueba.
 
+> **Caso de uso:** conectar Elasticsearch a Slack, PagerDuty, ServiceNow o un microservicio interno sin pasar por Kibana. El webhook POST lleva payload JSON con contadores del watch.
+
 ---
 
 ### Paso 1 — Listener de prueba (terminal aparte)
 
-```bash
-python3 -m http.server 9999
-```
+Necesitas URL alcanzable **desde el contenedor ES** — en Codespaces localhost del host no siempre funciona.
 
-O usa https://webhook.site y copia la URL única.
+| Opción | Cuándo |
+|--------|--------|
+| [webhook.site](https://webhook.site) | URL pública HTTPS — recomendado en Codespaces |
+| `python3 -m http.server 9999` | Solo si ES puede alcanzar tu IP host (raro en cloud) |
+
+Copia la URL única de webhook.site antes del paso 2.
 
 ---
 
 ### Paso 2 — Actualizar watch (ejemplo webhook.site)
 
-Sustituye `WEBHOOK_URL` por tu URL:
+Sustituye `host`/`path` por los de tu URL (dominio y UUID del path):
 
 ```bash
 curl -fsS -X PUT 'http://localhost:9200/_watcher/watch/lab-m08-error-watch' \
@@ -59,7 +64,9 @@ curl -fsS -X PUT 'http://localhost:9200/_watcher/watch/lab-m08-error-watch' \
 }'
 ```
 
-Ajusta `host`/`path` según tu proveedor (el ejemplo es ilustrativo).
+Umbral `>= 10` docs totales `demo-app` — más fácil de disparar que ERROR puro para validar el canal.
+
+**Producción:** autenticación (Bearer token), retry, timeout y validación TLS en el webhook.
 
 ---
 
@@ -69,6 +76,8 @@ Ajusta `host`/`path` según tu proveedor (el ejemplo es ilustrativo).
 curl -fsS -X PUT 'http://localhost:9200/_watcher/watch/lab-m08-error-watch/_execute?pretty'
 ```
 
+Refresca webhook.site — deberías ver POST con `count`. Si no llega: red del contenedor, firewall Codespaces, o condición false.
+
 ---
 
 ### Paso 4 — Limpiar
@@ -77,15 +86,18 @@ curl -fsS -X PUT 'http://localhost:9200/_watcher/watch/lab-m08-error-watch/_exec
 curl -fsS -X DELETE 'http://localhost:9200/_watcher/watch/lab-m08-error-watch'
 ```
 
+Evita watches de lab consumiendo ciclos en background.
+
 ---
 
 ## Validación
 
-- [ ] Recibiste petición en webhook.site o explicaste limitación de red en Codespaces.
+- [ ] Recibiste petición en webhook.site **o** documentaste limitación de red con evidencia (`_execute` response).
 - [ ] Watch eliminado al final.
+- [ ] Diferencias anotadas: Log action (M08-03) vs webhook (integración externa).
 
 ---
 
 ## Antes de seguir
 
-M09 activará auth: las reglas y watches necesitarán roles adecuados.
+M09 activará auth: las reglas y watches necesitarán roles con privilegios `manage_watcher` y usuarios de servicio — no uses `elastic` en prod para watches.

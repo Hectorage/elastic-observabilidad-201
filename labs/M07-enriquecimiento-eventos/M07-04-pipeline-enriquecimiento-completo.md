@@ -4,7 +4,9 @@
 
 > ⏱️ ~40 min
 
-**Objetivo:** operar `lab-enrich-completo` de punta a punta y medir latencia de ingest.
+**Objetivo:** operar `lab-enrich-completo` de punta a punta y medir calidad de enriquecimiento bajo carga.
+
+> **Orden importa:** grok primero (extrae IP y user agent del message) → geoip sobre `client.ip` → user_agent sobre `user_agent.original`. Pipeline mal ordenado = campos vacíos difíciles de depurar.
 
 ---
 
@@ -15,9 +17,13 @@
 curl -fsS 'http://localhost:9200/_ingest/pipeline/lab-enrich-completo?pretty' | head -30
 ```
 
+Anota la secuencia de processors en la respuesta — debe reflejar el orden anterior.
+
 ---
 
-### Paso 2 — Bulk de 100 eventos
+### Paso 2 — Bulk de ~100 eventos
+
+Simula pico de tráfico web (Black Friday, campaña marketing):
 
 ```bash
 python3 <<'PY'
@@ -37,9 +43,13 @@ PY
 curl -fsS 'http://localhost:9200/lab-access-bulk/_count'
 ```
 
+**Producción:** bulk en lotes 5–15 MB con `refresh=false` — M12-02 profundiza throughput.
+
 ---
 
 ### Paso 3 — Agregación por status
+
+Valida que el parseo masivo no degradó calidad:
 
 ```bash
 curl -fsS -H 'Content-Type: application/json' \
@@ -47,16 +57,22 @@ curl -fsS -H 'Content-Type: application/json' \
   -d '{"size":0,"aggs":{"by_status":{"terms":{"field":"http.response.status_code","size":10}}}}'
 ```
 
+Esperado: buckets 200, 404, 500 alineados con `access-lab.log`. Si muchos `null`, revisa grok failures.
+
 ---
 
 ### Paso 4 — Checklist de calidad
 
-| Campo | ¿Presente en >90% docs? |
-|-------|-------------------------|
-| client.ip | |
-| http.response.status_code | |
-| client.geo.country_name | |
-| user_agent.name | |
+Muestrea mentalmente 10 docs al azar en Discover o con `_search`:
+
+| Campo | ¿Presente en >90% docs? | Si no — acción |
+|-------|---------------------------|----------------|
+| `client.ip` | | Revisar grok pattern IP |
+| `http.response.status_code` | | Revisar grok status |
+| `client.geo.country_name` | | Solo IPs públicas; OK si parcial |
+| `user_agent.name` | | Revisar extracción UA en grok |
+
+**SLI de ingesta:** en prod monitorizas % docs con campos obligatorios — caída = deploy de pipeline roto.
 
 ---
 
@@ -64,10 +80,10 @@ curl -fsS -H 'Content-Type: application/json' \
 
 - [ ] `_count` ≥ 100.
 - [ ] Agregación por status coherente (200, 404, 500).
-- [ ] Checklist rellenado.
+- [ ] Checklist rellenado con porcentajes aproximados.
 
 ---
 
 ## Antes de seguir
 
-Orden de processors importa: grok antes de geoip/user_agent.
+M08 alertará sobre estos mismos campos parseados — enriquecimiento de calidad reduce falsos negativos en reglas KQL.
