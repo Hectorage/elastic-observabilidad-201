@@ -40,7 +40,7 @@ Salida esperada: `STACK_VERSION=8.17.2` y Docker Compose v2.
 
 ### Paso 3 — Levantar el stack de demostración (preconstruido)
 
-El repo incluye Elasticsearch, Kibana, un generador de logs (`loggen`), Filebeat, Metricbeat y Auditbeat en `infra/docker-compose.yml`.
+El repo incluye Elasticsearch, Kibana, un generador de logs (`loggen`), Filebeat, Metricbeat y Auditbeat en `infra/docker-compose.yml`. Referencia: [docs/componentes/](../../docs/componentes/README.md).
 
 ```bash
 docker compose -f infra/docker-compose.yml --profile beats up -d
@@ -132,7 +132,7 @@ Sin teoría previa: relaciona lo vivido con el diagrama del curso:
 
 Logstash y las alertas llegan en **M04** y **M08**; aquí el Beat envía **directo** a Elasticsearch (caso más simple del curso).
 
-Para profundizar en componentes: [The Elastic Stack](https://www.elastic.co/docs/get-started/the-stack) · [Observability overview](https://www.elastic.co/docs/solutions/observability).
+Para profundizar en componentes: [docs/componentes/](../../docs/componentes/README.md) · [The Elastic Stack](https://www.elastic.co/docs/get-started/the-stack) · [Observability overview](https://www.elastic.co/docs/solutions/observability).
 
 ---
 

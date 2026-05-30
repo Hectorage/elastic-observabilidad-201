@@ -36,9 +36,12 @@
 
 El slug describe **qué hace el alumno** en ese bloque. El fork y Codespace están en M01-01, no en un directorio “bootstrap” aparte.
 
-## Documentación oficial (enlaces válidos)
+## Documentación de apoyo
 
-Lista mantenida en [docs/enlaces-oficiales.md](../../docs/enlaces-oficiales.md).
+| Recurso | Enlace |
+|---------|--------|
+| Componentes del stack | [docs/componentes/](../../docs/componentes/README.md) |
+| Enlaces oficiales Elastic (`elastic.co/docs`) | [docs/enlaces-oficiales.md](../../docs/enlaces-oficiales.md) |
 
 ## Antes de seguir (cierre M01)
 

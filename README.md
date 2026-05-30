@@ -85,6 +85,8 @@ Kafka/Redpanda (M11) y Prometheus entran como integraciones opcionales.
 |-----------|---------|
 | Comprobar salud del entorno | `./scripts/health-check.sh` |
 | Síntoma → causa → solución | [labs/TROUBLESHOOTING.md](labs/TROUBLESHOOTING.md) |
+| Qué hace cada servicio del compose | [docs/componentes/](docs/componentes/README.md) |
+| CAP y consistencia del pipeline | [docs/cap-y-consistencia-stack.md](docs/cap-y-consistencia-stack.md) |
 | Comandos y KQL frecuentes | [labs/CHEATSHEET.md](labs/CHEATSHEET.md) |
 | Docker / perfiles compose | [infra/README.md](infra/README.md) |
 | Documentación Elastic | [docs/enlaces-oficiales.md](docs/enlaces-oficiales.md) |
@@ -95,6 +97,8 @@ Kafka/Redpanda (M11) y Prometheus entran como integraciones opcionales.
 
 ```text
 labs/Mxx-slug/          Guiones (Mxx-NN-slug.md)
+docs/componentes/       Referencia por servicio (ES, Kibana, Beats, loggen)
+docs/cap-y-consistencia-stack.md  CAP y garantías del pipeline
 infra/                  docker-compose + overrides (logstash, security, integrations)
 infra/ingest-pipelines/ JSON de pipelines (M04/M07)
 scripts/                health-check, apply-ingest-pipelines, setup-ilm-lab

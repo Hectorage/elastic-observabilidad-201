@@ -20,14 +20,16 @@ Kibana: http://localhost:5601 — Elasticsearch: http://localhost:9200
 
 ## Servicios base
 
+Referencia: [docs/componentes/](../docs/componentes/README.md)
+
 | Servicio | Perfil | Puerto |
 |----------|--------|--------|
-| elasticsearch | (base) | 9200 |
-| kibana | (base) | 5601 |
-| loggen | beats | — |
-| filebeat | beats | — |
-| metricbeat | beats | — |
-| auditbeat | beats | — |
+| [elasticsearch](../docs/componentes/elasticsearch.md) | (base) | 9200 |
+| [kibana](../docs/componentes/kibana.md) | (base) | 5601 |
+| [loggen](../docs/componentes/loggen.md) | beats | — |
+| [filebeat](../docs/componentes/filebeat.md) | beats | — |
+| [metricbeat](../docs/componentes/metricbeat.md) | beats | — |
+| [auditbeat](../docs/componentes/auditbeat.md) | beats | — |
 
 Seguridad deshabilitada hasta **M09** (compose base).
 

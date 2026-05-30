@@ -2,6 +2,10 @@
 
 Elastic migró la documentación de `elastic.co/guide/...` a **`elastic.co/docs`**. Usa siempre estas URLs en el curso.
 
+Referencia de componentes en el repo: [componentes/README.md](componentes/README.md).
+
+CAP y consistencia del stack: [cap-y-consistencia-stack.md](cap-y-consistencia-stack.md).
+
 | Tema | URL |
 |------|-----|
 | Portal de documentación | https://www.elastic.co/docs |

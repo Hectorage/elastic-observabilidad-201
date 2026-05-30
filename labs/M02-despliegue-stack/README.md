@@ -28,6 +28,8 @@
 
 **Infra:** `infra/docker-compose.yml`
 
+**Referencia:** [docs/componentes/](../../docs/componentes/README.md)
+
 ## Antes de seguir (cierre M02)
 
 - [ ] Puedes levantar ES → Kibana → Beats en ese orden.
