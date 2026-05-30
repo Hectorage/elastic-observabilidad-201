@@ -44,7 +44,7 @@ Ejemplo:
 | **Crecimiento del fichero** | Log append-only sin rotación configurada → disco del volumen montado; conviene logrotate o límite en entornos largos. |
 | **Estado del generador** | Sin estado entre líneas; reinicio del contenedor solo afecta continuidad temporal del flujo. |
 | **Coordinación con Filebeat** | Si el generador para, Filebeat sigue vivo pero deja de haber eventos nuevos; distinguir agente caído vs fuente silenciosa. |
-| **Identificación en ES** | Filebeat puede etiquetar con campos custom (`log.source`, etc.) para filtrar este origen en Discover. |
+| **Identificación en ES** | Filebeat puede etiquetar con campos custom (`log_source`, etc.) para filtrar este origen en Discover. |
 
 ## Señales y comprobaciones
 

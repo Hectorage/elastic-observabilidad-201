@@ -15,7 +15,7 @@ docker compose -f infra/docker-compose.yml --profile beats up -d
 ./scripts/health-check.sh
 ```
 
-Kibana → **Discover** → data view `filebeat-*` → `log.source : "demo-app"`.
+Kibana → **Discover** → data view `filebeat-*` → `log_source : "demo-app"`.
 
 ---
 
@@ -49,7 +49,7 @@ curl -fsS -H 'Content-Type: application/json' \
   'http://localhost:9200/filebeat-*/_search?pretty' \
   -d '{
     "size": 0,
-    "query": {"term": {"log.source": "demo-app"}},
+    "query": {"term": {"log_source": "demo-app"}},
     "aggs": {
       "by_status": {
         "terms": {

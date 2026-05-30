@@ -25,7 +25,7 @@ Matriz de síntomas → causa probable → acción. Empieza siempre por `./scrip
 | Síntoma | Causa probable | Acción |
 |---------|----------------|--------|
 | `app.log` no existe; `lab-loggen` / `lab-filebeat` no aparecen en `ps` | Arranque sin perfil `beats` (solo ES + Kibana) | `docker compose -f infra/docker-compose.yml --profile beats up -d` y verifica los 6 contenedores. |
-| `filebeat-*/_count` = 0 | Filebeat no arrancó o no lee ficheros | `docker logs lab-filebeat`; revisa paths y volumen `samples/logs`. |
+| `filebeat-*/_count` = 0 | Filebeat no arrancó, no lee ficheros o **eventos rechazados por ES** | `docker logs lab-filebeat`; busca `events were dropped`. Causa habitual: campo custom `log.source` (conflicto ECS) — usar `log_source` en `filebeat.yml`. Recrea Filebeat tras actualizar. |
 | Hay docs pero Discover vacío | Rango de tiempo del selector | **Last 15 minutes** / **Last 1 hour** (logs recientes de loggen). Guía: [guia-kibana-discover-data-view.md](../docs/guia-kibana-discover-data-view.md). |
 | No existe el data view | Falta crear el data view | Discover → **Create data view** → patrón `filebeat-*`, timestamp `@timestamp`. Guía: [guia-kibana-discover-data-view.md](../docs/guia-kibana-discover-data-view.md). |
 | `connection refused` a `elasticsearch:9200` | ES caído o nombre incorrecto | Arranca ES; usa el nombre de servicio, no `localhost`, dentro de contenedores. |

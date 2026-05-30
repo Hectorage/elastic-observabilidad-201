@@ -44,7 +44,7 @@ Salida esperada: `http.response.status_code` como número (p. ej. 500), `latency
 ### Paso 4 — Discover con KQL numérico
 
 ```text
-log.source : "demo-app" and http.response.status_code >= 500
+log_source : "demo-app" and http.response.status_code >= 500
 latency_ms > 300
 ```
 

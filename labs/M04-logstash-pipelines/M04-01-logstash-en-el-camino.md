@@ -46,7 +46,7 @@ Salida esperada: `"count"` > 0 y creciendo.
 
 ### Paso 4 — Discover
 
-Data view `filebeat-*`, filtro `log.source : "demo-app"`.
+Data view `filebeat-*`, filtro `log_source : "demo-app"`.
 
 Compara con M03: el **origen** es el mismo (`loggen`), el **camino** ahora pasa por Logstash (puerto 5044).
 

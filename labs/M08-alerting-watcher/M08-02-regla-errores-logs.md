@@ -11,7 +11,7 @@
 ### Paso 1 — Regla Elasticsearch query
 
 - Índices: `filebeat-*`
-- KQL: `log.source : "demo-app" and (http.response.status_code : 500 or message : *status=500*)`
+- KQL: `log_source : "demo-app" and (http.response.status_code : 500 or message : *status=500*)`
 - Condición: count **>= 3** en **5 min**
 
 Nombre: `lab-m08-http-500-burst`.
@@ -31,7 +31,7 @@ Espera 5–10 min; el `loggen` emite ~10 % ERROR — debería disparar en ventan
 ```bash
 curl -fsS -H 'Content-Type: application/json' \
   'http://localhost:9200/filebeat-*/_count' \
-  -d '{"query":{"bool":{"must":[{"term":{"log.source":"demo-app"}},{"query_string":{"query":"message:status=500 OR http.response.status_code:500"}}]}}}'
+  -d '{"query":{"bool":{"must":[{"term":{"log_source":"demo-app"}},{"query_string":{"query":"message:status=500 OR http.response.status_code:500"}}]}}}'
 ```
 
 ---

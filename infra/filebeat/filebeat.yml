@@ -5,7 +5,7 @@ filebeat.inputs:
     paths:
       - /var/log/lab/*.log
     fields:
-      log.source: demo-app
+      log_source: demo-app
       course.module: M02-M03
     fields_under_root: true
 

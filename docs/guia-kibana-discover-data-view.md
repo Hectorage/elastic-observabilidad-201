@@ -84,8 +84,8 @@ Si Kibana avisa de que no hay coincidencias: vuelve a terminal y confirma `_coun
 2. **Time picker** (arriba, calendario / *Last 15 minutes*): elige **Last 15 minutes** o **Last 1 hour**.  
    Los logs de `loggen` son **recientes**; si dejas *Last 7 days* vacío o un rango antiguo, la tabla puede parecer vacía.
 3. **Barra de búsqueda KQL**: escribe  
-   `log.source : "demo-app"`  
-   y pulsa Enter.
+   `log_source : "demo-app"`  
+   y pulsa Enter. Alternativa si el filtro no devuelve filas: `message : *demo-app*`.
 4. **Tabla central**: filas con `@timestamp` y `message`. Clic en **>** o en una fila para expandir el documento.
 5. **Panel lateral / detalle**: localiza campos `message`, `host.name`, `agent.type`.
 

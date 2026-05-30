@@ -164,8 +164,9 @@ Un **data view** le dice a Kibana qué índices leer y qué campo usar como tiem
 **7e — Ver los eventos de loggen**
 
 1. **Time picker** (arriba): **Last 15 minutes** o **Last 1 hour** (los logs son recientes; un rango vacío o muy antiguo deja la tabla en blanco).
-2. Barra KQL: `log.source : "demo-app"` → Enter.
-3. Abre el documento más reciente; localiza `message`, `host.name`, `agent.type`.
+2. Barra KQL: `log_source : "demo-app"` → Enter.  
+   Si no devuelve nada, prueba sin filtro y luego `message : *demo-app*` (el texto siempre va en `message`).
+3. Abre el documento más reciente; localiza `message`, `log_source`, `host.name`, `agent.type`.
 
    ![Referencia: Discover con eventos](../../docs/imagenes/kibana/kibana-discover-con-eventos.png)
 

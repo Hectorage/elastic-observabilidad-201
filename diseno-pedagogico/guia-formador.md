@@ -12,7 +12,7 @@ Apoyo para impartir el curso completo. Complementa `ritmo-clase.md` (tiempos) y 
 
 | Módulo | Artefacto que debe existir | Comando de verificación |
 |--------|----------------------------|--------------------------|
-| M01 | Stack UP + evento visto en Discover | `./scripts/health-check.sh`; KQL `log.source : "demo-app"` |
+| M01 | Stack UP + evento visto en Discover | `./scripts/health-check.sh`; KQL `log_source : "demo-app"` |
 | M02 | Cluster + Kibana + Filebeat (desglose) | `_cluster/health`; `lab-smoke` indexado |
 | M03 | Tres familias de datos | `_cat/indices` muestra filebeat/metricbeat/auditbeat |
 | M04 | Logstash + campos HTTP | `:9600` pipelines; `http.response.status_code` en Discover |

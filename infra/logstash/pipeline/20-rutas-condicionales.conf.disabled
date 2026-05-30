@@ -6,7 +6,7 @@ input {
 }
 
 filter {
-  if [log][source] == "demo-app" {
+  if [log_source] == "demo-app" {
     grok {
       match => {
         "message" => "%{TIMESTAMP_ISO8601} %{LOGLEVEL:[log][level]} %{WORD:service.name} request_id=%{NUMBER:request_id} method=%{WORD:http.request.method} path=%{URIPATH:url.path} status=%{NUMBER:http.response.status_code} latency_ms=%{NUMBER:latency_ms}"

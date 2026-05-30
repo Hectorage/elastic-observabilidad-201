@@ -25,9 +25,11 @@ En `_source`, localiza y anota el valor de:
 | `message` | |
 | `host.name` | |
 | `agent.type` | |
-| `log.source` | |
+| `log_source` | Etiqueta del origen (`demo-app`); ver nota ECS abajo |
 
 Estos campos son la base del “contrato” de observabilidad del curso.
+
+> **Nota ECS:** el campo se llama `log_source` (guión bajo), no `log.source`. Filebeat también rellena el objeto `log.file.path`; un custom field `log.source` choca con ese mapping y Elasticsearch **rechaza** el documento (en logs de Filebeat: `events were dropped`).
 
 ---
 
@@ -78,8 +80,8 @@ En **M06** verás por qué los data streams encajan mejor con ILM; aquí solo co
 
 En Kibana Discover (`filebeat-*`):
 
-1. `log.source : "demo-app" and message : *ERROR*` — solo errores de la app demo.
-2. `log.source : "demo-app" and message : *status=500*` — respuestas HTTP 500.
+1. `log_source : "demo-app" and message : *ERROR*` — solo errores de la app demo.
+2. `log_source : "demo-app" and message : *status=500*` — respuestas HTTP 500.
 3. Cambia el data view a `lab-contrato` (créalo si hace falta) y busca `message : "contrato manual"`.
 
 Documentación de sintaxis: [KQL](https://www.elastic.co/docs/explore-analyze/query-filter/languages/kql).
@@ -116,7 +118,7 @@ curl -fsS 'http://localhost:9200/auditbeat-*/_count'
 
 | Familia | Patrón | Un campo para filtrar en M03 |
 |---------|--------|------------------------------|
-| Logs | `filebeat-*` | `message`, `log.source` |
+| Logs | `filebeat-*` | `message`, `log_source` |
 | Métricas | `metricbeat-*` | `event.module`, `metricset.name` |
 | Auditoría / FIM | `auditbeat-*` | `file.path`, `event.action` |
 

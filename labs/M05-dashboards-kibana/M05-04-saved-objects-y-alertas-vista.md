@@ -21,7 +21,7 @@ Guárdalo en `labs/M05-dashboards-kibana/` solo si tu formador lo pide (no es ob
 **Observability** → **Alerts** → **Create rule** → **Elasticsearch query**:
 
 - Índice: `filebeat-*`
-- Query: `log.source : "demo-app" and http.response.status_code : 500` (o KQL equivalente)
+- Query: `log_source : "demo-app" and http.response.status_code : 500` (o KQL equivalente)
 - Condición: **count > 0** en **1 min**
 - Acción: **Index threshold** → **Log** (o email de prueba si configurado)
 

@@ -12,7 +12,7 @@
 
 Nueva Lens en `filebeat-*`:
 
-- Filtro KQL: `log.source : "demo-app" and (http.response.status_code >= 500 or message : *status=500*)`
+- Filtro KQL: `log_source : "demo-app" and (http.response.status_code >= 500 or message : *status=500*)`
 - Métrica: Count · Tipo: **Metric** (número grande).
 
 Guardar como `lab-m05-error-count`.

@@ -30,7 +30,7 @@ curl -fsS 'http://localhost:9200/lab-fluent-bit/_count?pretty'
 
 ### Paso 3 — Discover
 
-Data view `lab-fluent-bit` → `log.source : "fluent-bit-lab"`.
+Data view `lab-fluent-bit` → `log_source : "fluent-bit-lab"`.
 
 ---
 

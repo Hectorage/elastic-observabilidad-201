@@ -34,7 +34,7 @@ curl -fsS -X PUT 'http://localhost:9200/_watcher/watch/lab-m08-error-watch' \
         "body": {
           "size": 0,
           "query": {
-            "term": { "log.source": "demo-app" }
+            "term": { "log_source": "demo-app" }
           }
         }
       }

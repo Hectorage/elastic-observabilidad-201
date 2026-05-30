@@ -80,7 +80,7 @@ curl -fsS http://localhost:9600/_node/stats/pipelines?pretty
 ## KQL útil en Discover
 
 ```text
-log.source : "demo-app"
+log_source : "demo-app"
 http.response.status_code >= 500
 latency_ms > 300
 event.module : "docker" and metricset.name : "cpu"

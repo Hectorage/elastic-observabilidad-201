@@ -47,4 +47,4 @@ El slug describe **qué hace el alumno** en ese bloque. El fork y Codespace est�
 
 - [ ] Stack completo arriba con `./scripts/health-check.sh` OK.
 - [ ] Has visto eventos en Discover y entiendes fuente → Beat → ES → Kibana.
-- [ ] Sabes filtrar por `log.source` y por texto en `message`.
+- [ ] Sabes filtrar por `log_source` y por texto en `message`.

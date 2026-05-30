@@ -41,7 +41,7 @@ Crea o usa:
 - `filebeat-*` — INFO/WARN
 - `filebeat-errors-*` — solo ERROR (`log.level : "ERROR"`)
 
-Filtro común: `log.source : "demo-app"`.
+Filtro común: `log_source : "demo-app"`.
 
 ---
 

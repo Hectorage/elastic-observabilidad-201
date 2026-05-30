@@ -46,7 +46,7 @@ Ejecuta en orden sin saltarte pasos:
 | 1 | `docker compose -f infra/docker-compose.yml ps` → ES `healthy`, Kibana `Up` | |
 | 2 | `curl -fsS 'http://localhost:9200/_cluster/health?pretty' \| grep status` | |
 | 3 | `curl -fsS 'http://localhost:9200/filebeat-*/_count'` → `count` > 0 y sube al repetir | |
-| 4 | Kibana :5601 → Discover `filebeat-*` → filtro `log.source : "demo-app"` | |
+| 4 | Kibana :5601 → Discover `filebeat-*` → filtro `log_source : "demo-app"` | |
 | 5 | Último documento con `@timestamp` de los últimos 5 min | |
 
 ---

@@ -54,7 +54,7 @@ En `infra/filebeat/filebeat.yml`, añade bajo `filebeat.inputs:`:
           negate: true
           match: after
     fields:
-      log.source: payments-api
+      log_source: payments-api
       log.parser: multiline-lab
     fields_under_root: true
 ```
@@ -107,7 +107,7 @@ curl -fsS -H 'Content-Type: application/json' \
 El `loggen` escribe **una línea por evento** (`app.log`). En Discover:
 
 ```text
-log.source : "demo-app"
+log_source : "demo-app"
 ```
 
 No necesita multiline. Los logs JSON de una línea por evento usarían parser `ndjson` (M04/M07).

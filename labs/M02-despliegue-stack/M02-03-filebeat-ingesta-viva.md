@@ -50,7 +50,7 @@ Salida esperada: `C2` > `C1`; aparece un backing index `.ds-filebeat-8.17.2-...`
 
 ```bash
 tail -2 infra/samples/logs/app.log
-curl -fsS 'http://localhost:9200/filebeat-*/_search?size=1&sort=@timestamp:desc&pretty' | grep -E '"message"|"log.source"|"host.name"|"agent.type"'
+curl -fsS 'http://localhost:9200/filebeat-*/_search?size=1&sort=@timestamp:desc&pretty' | grep -E '"message"|"log_source"|"host.name"|"agent.type"'
 ```
 
 El `message` de la API debe corresponder a una línea reciente de `app.log`.
@@ -60,7 +60,7 @@ El `message` de la API debe corresponder a una línea reciente de `app.log`.
 ### Paso 5 — Discover: dos familias de datos
 
 1. Data view **`filebeat-*`** (`@timestamp`).
-2. Filtro: `log.source : "demo-app"`.
+2. Filtro: `log_source : "demo-app"`.
 3. Filtro: `message : *ERROR*` — debes ver errores (~10 % del tráfico del `loggen`).
 4. Cambia a data view **`lab-smoke`** — sigue existiendo el documento manual de M02-01.
 

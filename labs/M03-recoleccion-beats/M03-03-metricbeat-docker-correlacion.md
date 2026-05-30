@@ -93,7 +93,7 @@ Observa si hay variación en campos de CPU/memoria del contenedor (el lab puede 
 | Pregunta | Logs (`filebeat-*`) | Métricas (`metricbeat-*`) |
 |----------|---------------------|---------------------------|
 | ¿Qué tipo de dato? | Texto / contexto | Números / series |
-| ¿Campo de módulo? | `log.source` | `event.module` |
+| ¿Campo de módulo? | `log_source` | `event.module` |
 | ¿Contenedor? | `container.*` (si processor) | `docker.container.name` |
 | ¿Correlacionar por? | `host.name` + `@timestamp` | `host.name` + `@timestamp` |
 

@@ -24,7 +24,7 @@ import json, urllib.request, time
 bulk = []
 for i in range(5000):
     bulk.append(json.dumps({"index": {"_index": "lab-perf-bulk"}}))
-    bulk.append(json.dumps({"@timestamp": "2026-05-29T12:00:00Z", "message": f"perf test {i}", "log.source": "perf"}))
+    bulk.append(json.dumps({"@timestamp": "2026-05-29T12:00:00Z", "message": f"perf test {i}", "log_source": "perf"}))
 body = "\n".join(bulk) + "\n"
 t0 = time.time()
 req = urllib.request.Request("http://localhost:9200/_bulk", data=body.encode(), method="POST",

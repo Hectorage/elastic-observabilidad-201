@@ -29,7 +29,7 @@ curl -fsS -H 'Content-Type: application/json' \
     "query": {
       "bool": {
         "filter": [
-          {"term": {"log.source": "demo-app"}},
+          {"term": {"log_source": "demo-app"}},
           {"range": {"@timestamp": {"gte": "now-1h"}}}
         ]
       }

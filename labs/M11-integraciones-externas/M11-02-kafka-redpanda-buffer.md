@@ -28,7 +28,7 @@ docker exec lab-redpanda rpk topic list
 ### Paso 3 — Producir mensaje de prueba
 
 ```bash
-echo '{"message":"kafka lab event","log.source":"redpanda-test"}' | \
+echo '{"message":"kafka lab event","log_source":"redpanda-test"}' | \
   docker exec -i lab-redpanda rpk topic produce lab-logs -f '%v'
 docker exec lab-redpanda rpk topic consume lab-logs -n 1
 ```

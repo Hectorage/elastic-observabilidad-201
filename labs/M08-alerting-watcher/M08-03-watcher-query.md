@@ -24,7 +24,7 @@ curl -fsS -X PUT 'http://localhost:9200/_watcher/watch/lab-m08-error-watch' \
           "query": {
             "bool": {
               "must": [
-                { "term": { "log.source": "demo-app" } },
+                { "term": { "log_source": "demo-app" } },
                 { "query_string": { "default_field": "message", "query": "ERROR" } }
               ],
               "filter": [{ "range": { "@timestamp": { "gte": "now-5m" } } }]
