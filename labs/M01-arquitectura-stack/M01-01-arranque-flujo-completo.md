@@ -27,7 +27,7 @@ ls labs infra scripts
 
 ```bash
 cd infra
-cp -n .env.example .env
+cp --update=none .env.example .env
 grep STACK_VERSION .env
 cd ..
 docker --version

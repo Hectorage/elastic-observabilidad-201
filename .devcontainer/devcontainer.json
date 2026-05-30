@@ -14,7 +14,7 @@
       "onAutoForward": "silent"
     }
   },
-  "postCreateCommand": "cp -n infra/.env.example infra/.env 2>/dev/null || true",
+  "postCreateCommand": "cp --update=none infra/.env.example infra/.env 2>/dev/null || true",
   "customizations": {
     "vscode": {
       "extensions": ["ms-azuretools.vscode-docker"]
