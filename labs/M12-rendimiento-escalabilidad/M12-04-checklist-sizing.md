@@ -71,3 +71,22 @@ Has recorrido **64 h orientativas** de temario en formato lab-first. Siguiente p
 ### Reto final
 
 Exporta un dashboard NDJSON de M05 o M10 y compártelo con un compañero importándolo en otro fork.
+
+<details>
+<summary>Ver respuestas</summary>
+
+**Exportar**
+
+1. Kibana → ☰ → **Management** → **Stack Management** → **Saved Objects**.
+2. Marca el dashboard (y dependencias si Kibana lo ofrece).
+3. **Export** → descarga `.ndjson`.
+
+**Importar en otro fork**
+
+1. Mismo menú → **Import**.
+2. Sube el NDJSON; resuelve conflictos (overwrite/rename).
+3. Abre el dashboard y comprueba data views e índices existen en el fork destino.
+
+Los saved objects viven en ES; el NDJSON es el “paquete” portable entre entornos de lab.
+
+</details>

@@ -115,3 +115,24 @@ Más casos: [TROUBLESHOOTING](../TROUBLESHOOTING.md).
 1. `GET /` — ¿qué versión del stack imprime?
 2. Borra el contenedor sin `-v` y vuelve a crearlo: ¿sigue `lab-smoke`? (`docker compose up -d --force-recreate elasticsearch`)
 3. (Opcional) Doc: [The Elastic Stack — Elasticsearch](https://www.elastic.co/docs/get-started/the-stack)
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Versión en `GET /`**
+
+```bash
+curl -fsS http://localhost:9200/ | grep number
+```
+
+Debe coincidir con `STACK_VERSION` del `.env` (p. ej. **8.17.2**).
+
+**2. Recrear contenedor sin `-v`**
+
+**Sí**, `lab-smoke` sigue existiendo: los datos viven en el volumen **`esdata`**, no en el contenedor. `docker compose up -d --force-recreate elasticsearch` solo recrea el proceso; el volumen persiste.
+
+**3. Elasticsearch en el stack (opcional)**
+
+Nodo de almacenamiento y búsqueda; recibe bulk, indexa documentos y sirve consultas. Kibana y Beats son clientes de su API `:9200`.
+
+</details>

@@ -135,3 +135,20 @@ No necesita multiline. Los logs JSON de una línea por evento usarían parser `n
 1. Si el patrón falla, ¿qué ves en Discover? (fragmentación)
 2. ¿Cuándo moverías esto a un ingest pipeline en Elasticsearch?
 3. (Opcional) [Filebeat multiline](https://www.elastic.co/docs/reference/beats/filebeat/multiline-examples)
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Patrón multiline fallido**
+
+**Fragmentación:** cada línea del stack trace es un **documento distinto** en Discover; el trace aparece partido en muchas filas sin relación clara.
+
+**2. Cuándo ingest pipeline**
+
+Cuando quieres **centralizar** la regla (todos los Beats envían crudo), versionar parseo en Git (`infra/ingest-pipelines/`) o aplicar grok/enriquecimiento **sin redeploy** de cada agente. M04/M07 cubren ese camino.
+
+**3. Multiline en Filebeat (opcional)**
+
+Documentación de patrones `pattern`, `negate`, `match` y ejemplos Java/stack traces.
+
+</details>

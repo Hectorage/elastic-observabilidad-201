@@ -134,6 +134,23 @@ Salida esperada en health-check: las tres familias con docs > 0.
 2. Campos ECS comunes entre un doc Filebeat y uno Auditbeat (`@timestamp`, `host.name`, `agent.*`).
 3. (Opcional) Por qué security (M09) sigue desactivado aunque veamos `sshd` en logs.
 
+<details>
+<summary>Ver respuestas</summary>
+
+**1. `event.action` al borrar**
+
+Suele ser **`deleted`** (o `deletion` según versión/campo ECS). También verás eventos `created`, `updated`, `moved` en el ciclo create → rename → delete del paso 2.
+
+**2. Campos ECS comunes**
+
+`@timestamp`, `host.name`, `host.hostname`, `agent.type`, `agent.version`, `agent.name`, `ecs.version` — permiten correlacionar logs, métricas y auditoría en Discover por host y ventana temporal.
+
+**3. Security desactivado (opcional)**
+
+Ver líneas `sshd` en logs **≠** clúster asegurado: no hay TLS, auth ni RBAC (`xpack.security.enabled=false`). M09 activa autenticación y cifrado; aquí solo simulas telemetría de seguridad.
+
+</details>
+
 ---
 
 **Siguiente módulo →** [M04-01 — Logstash en el camino](../M04-logstash-pipelines/M04-01-logstash-en-el-camino.md)

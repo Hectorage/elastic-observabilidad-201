@@ -86,8 +86,17 @@ Si Kibana avisa de que no hay coincidencias: vuelve a terminal y confirma `_coun
 3. **Barra de búsqueda KQL**: escribe  
    `log_source : "demo-app"`  
    y pulsa Enter. Alternativa si el filtro no devuelve filas: `message : *demo-app*`.
-4. **Tabla central**: filas con `@timestamp` y `message`. Clic en **>** o en una fila para expandir el documento.
-5. **Panel lateral / detalle**: localiza campos `message`, `host.name`, `agent.type`.
+4. **Tabla central**: filas con `@timestamp` y `message`.
+
+5. **Ver campos del documento** (la UI de 8.x no siempre muestra un panel fijo a la derecha como en la captura de referencia):
+
+   | Método | Cómo |
+   |--------|------|
+   | **Expandir fila** | Clic en la flecha **`>`** a la izquierda de una fila → se despliega el JSON/campos **debajo** de esa fila. |
+   | **Añadir columnas** | Barra lateral **izquierda** → *Available fields* → busca `log_source`, `host.name`, `agent.type` → botón **`+`** para mostrarlos en la tabla. |
+   | **Documento completo** | Con la fila expandida, pestaña **JSON** o **Table** (según versión) para ver todos los campos. |
+
+   Localiza al menos: `message`, `log_source`, `host.name`, `agent.type`.
 
 Compara el `message` con la última línea de `tail infra/samples/logs/app.log` del paso 6.
 

@@ -121,3 +121,20 @@ Observa si hay variación en campos de CPU/memoria del contenedor (el lab puede 
 1. Lista tres `metricset.name` distintos en tus documentos.
 2. `docker logs lab-metricbeat` si `_count` es 0 — ¿error de socket?
 3. (Opcional) [Metricbeat docker module](https://www.elastic.co/docs/reference/beats/metricbeat/metricbeat-module-docker)
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Tres `metricset.name`**
+
+Con el módulo docker del lab, típicamente: **`container`**, **`cpu`**, **`memory`**, **`network`** (elige tres distintos de tus documentos).
+
+**2. `_count` = 0 en Metricbeat**
+
+Revisa `docker logs lab-metricbeat`: suele ser **socket no montado** (`/var/run/docker.sock`), permiso denegado o ES caído. Verifica el volumen en compose y que el daemon Docker responde.
+
+**3. Docker module (opcional)**
+
+Métricas de contenedores vía API del daemon; en Kubernetes usarías el módulo kubelet en su lugar.
+
+</details>

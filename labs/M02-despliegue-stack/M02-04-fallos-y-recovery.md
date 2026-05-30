@@ -115,3 +115,21 @@ Anota el tiempo total. Abre Discover y confirma eventos `demo-app` en los últim
 1. `curl -fsS 'http://localhost:9200/_cat/shards?v' | grep UNASSIGNED` — ¿cuándo lo usarías?
 2. Para `lab-filebeat` 2 min: ¿sube `_count`? ¿sigue green el cluster?
 3. (Opcional) Baja `ES_JAVA_OPTS` y mide tiempo hasta `healthy` tras reinicio.
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Shards UNASSIGNED**
+
+Cuando el clúster está **`red`** o sospechas shards primarios/replicas sin asignar tras caída de nodo, disco lleno o corrupción. Complementa con `_cluster/allocation/explain`.
+
+**2. Filebeat parado 2 min**
+
+- **`_count`:** no sube (o se congela).
+- **Cluster:** puede seguir **green/yellow** — la salud del clúster no depende de que Filebeat ingiera.
+
+**3. JVM más baja (opcional)**
+
+Con `-Xms512m -Xmx512m` el arranque suele **tardar más** o fallar en hosts justos de RAM; cronometra desde `up` hasta `healthy` en el healthcheck y compara con 768m.
+
+</details>

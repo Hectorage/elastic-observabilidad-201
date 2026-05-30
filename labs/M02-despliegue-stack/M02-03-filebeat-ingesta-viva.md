@@ -110,3 +110,20 @@ Solo los **nuevos** eventos llevan `team: platform`.
 1. Para `lab-filebeat` — ¿deja de crecer `_count`?
 2. En un evento expandido, localiza el campo que añade `add_host_metadata`.
 3. (Opcional) [Beats vs Logstash](https://www.elastic.co/docs/reference/beats/auditbeat/diff-logstash-beats)
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Parar Filebeat**
+
+Sí: `_count` en `filebeat-*` **deja de aumentar** mientras Filebeat está parado (mismo comportamiento que M01-01). `loggen` sigue escribiendo en disco.
+
+**2. Campo de `add_host_metadata`**
+
+Campos bajo **`host.*`**: p. ej. `host.name`, `host.hostname`, `host.architecture`, `host.os.name`. El processor enriquece cada evento con metadata del contenedor/host.
+
+**3. Beats vs Logstash (opcional)**
+
+Beats = agente ligero en el edge, shipping directo. Logstash = transformación centralizada, múltiples inputs/outputs, buffers. Usa Logstash cuando el parseo supera lo razonable en el Beat (M04).
+
+</details>

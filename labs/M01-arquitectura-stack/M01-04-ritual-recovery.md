@@ -100,3 +100,31 @@ docker compose -f infra/docker-compose.yml --profile beats down
 1. Si `health-check` falla en Kibana pero ES está green, ¿qué dos comandos lanzas? (`docker logs lab-kibana`, comprobar puerto 5601)
 2. Explica en 20 segundos el flujo fuente → Beat → ES → Kibana a un compañero.
 3. (Opcional) Crea un alias `elab` que ejecute `health-check.sh` desde la raíz del repo.
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Kibana falla, ES green**
+
+```bash
+docker logs lab-kibana --tail 30
+curl -fsS http://localhost:5601/api/status | head -c 300; echo
+```
+
+Además comprueba en Codespaces que el puerto **5601** está reenviado (pestaña Ports). ES green no arregla solo la UI.
+
+**2. Flujo en 20 segundos**
+
+«La app escribe logs en disco → Filebeat los lee y manda JSON a Elasticsearch → Kibana consulta ES y te los muestra en Discover. Kibana no guarda logs; solo visualiza.»
+
+**3. Alias opcional**
+
+En `~/.bashrc` (ajusta la ruta a tu fork):
+
+```bash
+alias elab='cd ~/elastic-observabilidad-201 && ./scripts/health-check.sh'
+```
+
+O con la ruta del Codespace: `/workspaces/<nombre-repo>`.
+
+</details>

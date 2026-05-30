@@ -96,3 +96,26 @@ Tras `healthy`, Discover vuelve a funcionar. **Kibana depende de ES; nunca al re
 1. `docker logs lab-kibana --tail 20` — localiza conexión al cluster.
 2. ¿Qué tres cosas mirarías si la UI carga pero Discover está vacío?
 3. (Opcional) [Discover](https://www.elastic.co/docs/explore-analyze/discover)
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Logs de Kibana**
+
+```bash
+docker logs lab-kibana --tail 20
+```
+
+Busca líneas con `elasticsearch` / `http://elasticsearch:9200` — confirma que la UI se conecta al servicio ES por DNS interno de Compose.
+
+**2. UI carga pero Discover vacío**
+
+1. **Rango de tiempo** (time picker) — amplía a *Last 1 year* para `lab-smoke` con fecha fija.
+2. **Data view** — existe y apunta al índice correcto (`lab-smoke`, campo `@timestamp`).
+3. **Datos en ES** — `curl localhost:9200/lab-smoke/_count` > 0 (problema de UI vs problema de ingesta).
+
+**3. Discover (opcional)**
+
+Herramienta de exploración ad-hoc: filtra, expande documentos y valida campos antes de montar dashboards.
+
+</details>

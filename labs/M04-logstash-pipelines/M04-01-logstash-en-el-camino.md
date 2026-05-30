@@ -81,3 +81,21 @@ Anota en un evento: `agent.type` (filebeat), `host.name`, `@timestamp`.
 
 1. ¿Qué pasa si paras Logstash (`docker stop lab-logstash`) y miras `docker logs lab-filebeat`?
 2. Vuelve a arrancarlo antes del siguiente ejercicio.
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Parar Logstash**
+
+Filebeat acumula eventos en cola o muestra **`connection refused`** / **`publish failed`** hacia `logstash:5044`. `_count` en ES **deja de crecer** (o crece mucho más lento si hay buffer). Los logs del Beat son la primera pista.
+
+**2. Volver a arrancar**
+
+```bash
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.logstash.yml \
+  --profile beats --profile logstash start logstash
+```
+
+Espera API `:9600` y verifica que Filebeat reconecta antes de M04-02.
+
+</details>

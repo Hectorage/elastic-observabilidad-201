@@ -158,3 +158,24 @@ Para data streams en profundidad: [Data streams](https://www.elastic.co/docs/man
 2. Propón un nombre de data stream para logs nginx en prod (`logs-...`).
 3. En el documento manual, ¿qué campo usarías en una alerta de M08? (pista: `event.dataset` o `service.name`)
 4. (Opcional) Compara [Beats vs Logstash](https://www.elastic.co/docs/reference/beats/auditbeat/diff-logstash-beats) y di cuándo añadirías Logstash al diagrama de M01-01.
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. `filebeat-*` vs `.ds-filebeat-...`**
+
+`filebeat-*` es el **nombre lógico** del data stream (lo que pones en data views y en `_search`). Los índices `.ds-filebeat-8.17.2-2026.05.30-000001` son **backing indices** que Elasticsearch crea y rota por detrás (ILM). Operas sobre el alias lógico; no necesitas apuntar al `.ds-*` concreto.
+
+**2. Data stream para nginx en prod**
+
+Convención Elastic: `logs-{dataset}-{namespace}`, p. ej. `logs-nginx.prod`, `logs-nginx-default` o `logs-nginx-production`. Lo importante: tipo `logs`, dataset que identifique la fuente y namespace que separe entorno/equipo.
+
+**3. Campo para alerta (documento manual)**
+
+En el doc manual del paso 3 suele bastar `event.dataset : "lab-manual"` o `service.name : "lab-manual"` (según cómo lo indexaste). Son campos ECS estables para reglas; evita alertar solo por `_id` o por texto libre en `message`.
+
+**4. Cuándo añadir Logstash (opcional)**
+
+Añade Logstash cuando necesites **transformación pesada** (grok multilínea, enriquecimiento, rutas condicionales), **varios destinos** o **buffer** desacoplado. Beats → ES directo (M01) es el camino mínimo; Beats → Logstash → ES (M04) cuando el procesamiento en el edge no basta.
+
+</details>

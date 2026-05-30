@@ -84,3 +84,24 @@ Salida esperada: al menos un hit con tag `_grokparsefailure` (o sin campos HTTP 
 ### Reto
 
 Añade un filtro `if [http.response.status_code] >= 500 { mutate { add_tag => ["http_error"] } }` y filtra en Discover: `tags : "http_error"`.
+
+<details>
+<summary>Ver respuestas</summary>
+
+En `infra/logstash/pipeline/10-beats-to-es.conf`, dentro de `filter { }` y junto al bloque grok existente:
+
+```ruby
+if [http.response.status_code] >= 500 {
+  mutate { add_tag => ["http_error"] }
+}
+```
+
+Reinicia Logstash, genera tráfico ERROR con `loggen` y en Discover (`filebeat-*`):
+
+```text
+tags : "http_error"
+```
+
+Debes ver solo eventos con status ≥ 500 parseado por grok.
+
+</details>

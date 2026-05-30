@@ -117,3 +117,24 @@ Si `message.keyword` no existe, usa en Discover el filtro `message : *status=200
 1. KQL para solo `WARN` en logs sshd: `message : *sshd* and message : *WARN*`
 2. ¿Por qué mezclar app+sshd en un fichero sin `log_source` rompe alertas?
 3. Si no aparece `sshd`, `docker logs lab-filebeat --tail 20` y comprueba el volumen en compose.
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. KQL WARN en sshd**
+
+```text
+message : *sshd* and message : *WARN*
+```
+
+(Ajusta si tus líneas usan otro nivel literal; el patrón combina origen + nivel en el texto.)
+
+**2. Mezclar app + sshd sin `log_source`**
+
+Las alertas no pueden separar orígenes: un umbral en ERROR mezcla checkout con sshd; RBAC por equipo imposible; dashboards contaminados. **`log_source`** (u otro campo de clasificación) es el contrato para enrutar y alertar.
+
+**3. No aparece sshd**
+
+Comprueba que escribiste en `system-lab.log`, Filebeat lee `/var/log/lab/*.log`, el contenedor está Up y no hay errores de permiso en `docker logs lab-filebeat`. Regenera tráfico y espera 30 s.
+
+</details>

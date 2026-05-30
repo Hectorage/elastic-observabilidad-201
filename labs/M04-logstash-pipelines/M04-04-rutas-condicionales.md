@@ -83,3 +83,16 @@ mv infra/logstash/pipeline/10-beats-to-es.conf.disabled infra/logstash/pipeline/
 ### Reto
 
 ¿Cómo enviarías WARN a un tercer stream sin duplicar todo el bloque `output`?
+
+<details>
+<summary>Ver respuestas</summary>
+
+Opciones habituales:
+
+1. **`else if` en Logstash** — un solo `output { elasticsearch { ... } }` con condiciones encadenadas por nivel (`ERROR` → stream A, `WARN` → stream B, default → stream C).
+2. **`mutate` + tags** en filter y un output condicionado por tag (`if "warn_route" in [tags]`).
+3. **Pipeline ingest** con `reroute` processor (8.x) hacia distinto data stream según campo `log.level`.
+
+Evita copiar/pegar bloques `elasticsearch` completos; varía solo `data_stream_dataset` o el destino.
+
+</details>

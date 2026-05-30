@@ -126,3 +126,21 @@ Si Elasticsearch usa casi toda la RAM del contenedor, en M02 bajarás `ES_JAVA_O
 1. Escribe el síntoma en una frase si solo miras `_cluster/health` y no `_count`.
 2. `ss -tlnp | grep 9200` — ¿quién escucha en 9200?
 3. Para `lab-kibana` (no Filebeat). ¿Sigue Kibana en el navegador? ¿Sigue Elasticsearch respondiendo?
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Síntoma en una frase**
+
+«El clúster está green/yellow pero **no entran logs nuevos**» — salud del nodo no implica ingesta activa; hay que mirar `_count` o Discover.
+
+**2. Quién escucha en 9200**
+
+El proceso **Elasticsearch** (contenedor `lab-elasticsearch`), mapeado a `0.0.0.0:9200` en el host. En Codespaces verás el proxy de Docker o `java` del nodo ES según el SO.
+
+**3. Parar Kibana**
+
+- **Navegador:** Kibana **no carga** o muestra error de conexión (puerto 5601 caído).
+- **Elasticsearch:** **`curl localhost:9200/_cluster/health` sigue respondiendo** — ES no depende de Kibana. La ingesta (Filebeat) también puede seguir si está Up.
+
+</details>

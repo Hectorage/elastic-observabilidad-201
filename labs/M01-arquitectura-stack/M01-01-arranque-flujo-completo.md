@@ -166,9 +166,12 @@ Un **data view** le dice a Kibana qué índices leer y qué campo usar como tiem
 1. **Time picker** (arriba): **Last 15 minutes** o **Last 1 hour** (los logs son recientes; un rango vacío o muy antiguo deja la tabla en blanco).
 2. Barra KQL: `log_source : "demo-app"` → Enter.  
    Si no devuelve nada, prueba sin filtro y luego `message : *demo-app*` (el texto siempre va en `message`).
-3. Abre el documento más reciente; localiza `message`, `log_source`, `host.name`, `agent.type`.
+3. Con el filtro aplicado, abre un documento y localiza `message`, `log_source`, `host.name`, `agent.type`:
 
-   ![Referencia: Discover con eventos](../../docs/imagenes/kibana/kibana-discover-con-eventos.png)
+   - Clic en **`>`** a la izquierda de una fila (el detalle se abre **debajo** de la fila, no siempre hay panel derecho).
+   - O en la barra **izquierda** (*Available fields*): añade `host.name` y `agent.type` con **`+`** como columnas.
+
+   ![Referencia aproximada — el layout puede variar en 8.17](../../docs/imagenes/kibana/kibana-discover-con-eventos.png)
 
 **7f — Confirmar que el flujo sigue vivo**
 
@@ -221,3 +224,33 @@ Para profundizar en componentes: [docs/componentes/](../../docs/componentes/READ
 2. ¿Por qué Filebeat usa `elasticsearch:9200` y no `localhost:9200` dentro del contenedor?
 3. Filtra en Discover solo `message : *ERROR*`. ¿Cuántos eventos ves? (El `loggen` del lab genera ~10 % ERROR.)
 4. (Opcional) Lee la sección *Beats* en [The Elastic Stack](https://www.elastic.co/docs/get-started/the-stack) y anota una diferencia con Elastic Agent.
+
+<details>
+<summary>Ver respuestas</summary>
+
+**1. Parar Filebeat**
+
+`loggen` sigue escribiendo en `app.log`, pero `_count` en `filebeat-*` **deja de crecer** (el valor se congela). Los eventos nuevos se acumulan en disco hasta que vuelves a arrancar Filebeat:
+
+```bash
+docker compose -f infra/docker-compose.yml --profile beats stop filebeat
+sleep 60
+curl -fsS 'http://localhost:9200/filebeat-8.17.2/_count'
+docker compose -f infra/docker-compose.yml --profile beats start filebeat
+```
+
+Tras el `start`, `_count` vuelve a subir con las líneas pendientes.
+
+**2. `elasticsearch:9200` vs `localhost:9200`**
+
+Dentro del contenedor Filebeat, `localhost` es **el propio contenedor**, no el host ni Elasticsearch. En Docker Compose, `elasticsearch` es el **nombre DNS del servicio** en la red interna; Compose lo resuelve a la IP del contenedor ES. Desde la terminal del Codespace (fuera de contenedores) sí usas `localhost:9200`.
+
+**3. Filtro `message : *ERROR*`**
+
+Aproximadamente **10 %** de los eventos. El script de `loggen` emite ERROR 1 de cada 10 líneas (patrón cíclico 70 % INFO / 20 % WARN / 10 % ERROR). El número exacto depende del rango temporal y de cuánto lleve corriendo loggen.
+
+**4. Beats vs Elastic Agent (opcional)**
+
+**Beats** (Filebeat, Metricbeat, …) son agentes **independientes**, uno por rol, configurados con fichero local. **Elastic Agent** es un agente **unificado** gestionado desde **Fleet** en Kibana (políticas centralizadas, actualizaciones remotas, integraciones empaquetadas). En producción moderna Elastic empuja Agent + Fleet; los Beats siguen siendo válidos en el edge o en labs como este.
+
+</details>

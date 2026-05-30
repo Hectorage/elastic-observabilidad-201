@@ -90,3 +90,16 @@ curl -fsS 'http://localhost:9200/lab-ingest-test/_search?pretty' \
 ### Reto
 
 ¿Qué pipeline usarías si la fuente es solo API `_bulk` sin Beats?
+
+<details>
+<summary>Ver respuestas</summary>
+
+El mismo **ingest pipeline** de Elasticsearch (`lab-parse-demo-app` u otro), referenciado en cada bulk:
+
+- Parámetro de query: `POST /index/_bulk?pipeline=lab-parse-demo-app`
+- O **`index.default_pipeline`** en el índice/data stream destino
+- O campo `_pipeline` en cada línea del bulk NDJSON
+
+Los Beats solo automatizan el envío; la transformación vive en el pipeline del nodo ES.
+
+</details>
