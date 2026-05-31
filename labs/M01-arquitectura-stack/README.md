@@ -14,7 +14,7 @@
 
 ## Contexto
 
-- M01 es **100 % práctico**: primero se ve funcionando, luego se nombran componentes y campos.
+- M01 es sobre todo práctica: primero vemos el stack funcionando, luego nombramos componentes y campos. Cada paso lleva un párrafo de contexto — qué comprobamos y por qué, antes de ejecutar comandos.
 - El material preconstruido está en `infra/docker-compose.yml` (no partes de cero).
 - La seguridad avanzada (TLS, RBAC) llega en M09; aquí el clúster va sin autenticación para aprender el flujo base.
 
@@ -46,5 +46,5 @@ El slug describe **qué hace el alumno** en ese bloque. El fork y Codespace est�
 ## Antes de seguir (cierre M01)
 
 - [ ] Stack completo arriba con `./scripts/health-check.sh` OK.
-- [ ] Has visto eventos en Discover y entiendes fuente → Beat → ES → Kibana.
-- [ ] Sabes filtrar por `log_source` y por texto en `message`.
+- [ ] Hemos visto eventos en Discover y entendemos fuente → Beat → ES → Kibana.
+- [ ] Sabemos filtrar por `log_source` y por texto en `message`.

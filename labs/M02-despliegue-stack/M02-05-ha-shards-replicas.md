@@ -4,13 +4,13 @@
 
 > ⏱️ ~35 min · 🧩 Diseño + comandos en el lab single-node · 📎 [Elasticsearch](../../docs/componentes/elasticsearch.md) · [CAP y consistencia](../../docs/cap-y-consistencia-stack.md)
 
-**Objetivo:** entender **shards primarios**, **réplicas**, estados **`green` / `yellow` / `red`** y qué cambia al pasar del nodo único del lab a un clúster **multi-nodo** de producción.
-
-> **Por qué aquí:** en M02-01 viste `single-node` y en M02-04 tocaste `_cat/shards`. Este ejercicio cierra el módulo conectando esas piezas con **alta disponibilidad** — sin montar tres nodos (RAM del Codespace), pero con evidencia real en tu clúster y un diseño explícito para prod.
+Cerramos M02 con **shards primarios**, **réplicas** y los estados **`green` / `yellow` / `red`**: qué significan en nuestro nodo único y qué cambia en un clúster **multi-nodo** de producción. En M02-01 vimos `single-node` y en M02-04 tocamos `_cat/shards`; aquí conectamos esas piezas con alta disponibilidad — sin montar tres nodos (RAM del Codespace), pero con evidencia en nuestro clúster y un diseño explícito para prod.
 
 ---
 
 ### Paso 1 — Confirmar topología del lab
+
+`discovery.type=single-node` elimina elección de master y quorum — válido en lab, **no** en prod. Antes de hablar de HA, fijemos qué compromisos acepta el entorno del lab actual (1 nodo, réplicas sin asignar).
 
 ```bash
 grep -E 'discovery.type|cluster.name|node.name' infra/docker-compose.yml
@@ -28,7 +28,9 @@ Anota:
 
 ---
 
-### Paso 2 — Shards y réplicas en tus índices
+### Paso 2 — Shards y réplicas en los índices
+
+Elasticsearch **particiona** cada índice en shards primarios (escritura) y opcionalmente réplicas (lectura + failover). `_cat/shards` es la radiografía — ahí ves si un shard está `STARTED` o `UNASSIGNED`, no solo el color agregado del clúster.
 
 Cada índice (o backing index de un data stream) se divide en **shards primarios**; las **réplicas** son copias de lectura/failover.
 
@@ -54,6 +56,8 @@ En **single-node**, las réplicas quedan `UNASSIGNED` → clúster **`yellow`**.
 
 ### Paso 3 — Por qué `yellow` no es “fallo” en el lab
 
+El color del clúster resume **asignación de shards**, no calidad de logs ni ingesta. `allocation/explain` traduce el yellow en razón concreta — en single-node casi siempre «no hay otro nodo para la réplica».
+
 ```bash
 curl -fsS 'http://localhost:9200/_cluster/allocation/explain?pretty' \
   -H 'Content-Type: application/json' \
@@ -73,6 +77,8 @@ Elasticsearch suele explicar que la réplica no se asigna porque **no hay otro n
 ---
 
 ### Paso 4 — Diagrama: lab vs producción
+
+Vemos **dónde vive la redundancia**. En prod la HA está en réplicas en nodos distintos; Filebeat en un solo host no aporta HA de datos — si cae el host, perdemos ingesta de ese host hasta que vuelva el agente.
 
 ```mermaid
 flowchart TB
@@ -108,12 +114,14 @@ Referencia: [docs/componentes/elasticsearch.md](../../docs/componentes/elasticse
 
 ### Paso 5 — Tabla lab → producción (rellena)
 
-| Pregunta | Tu lab (1 nodo) | Producción típica |
+Traducimos lo que ves en el lab a **decisiones de diseño** en prod: cuántos nodos data, cuántas réplicas, qué pasa si cae el único nodo. Esta tabla es el puente hacia M10 (operación) y M12 (sizing).
+
+| Pregunta | Nuestro lab (1 nodo) | Producción típica |
 |----------|-----------------|-------------------|
 | ¿Cuántos nodos data? | 1 | ≥ 3 (según volumen) |
 | `number_of_replicas` | 1 (default) → **yellow** | 1+ con nodos suficientes → **green** |
 | Si cae el único nodo ES | **Indisponibilidad total** + riesgo de datos en volumen | Si hay réplica en otro nodo, **failover** del primario |
-| HA de Filebeat | Un contenedor; si cae, solo pierdes ingesta de ese host | Un Beat por host / DaemonSet — la HA del dato está en **ES**, no en el agente |
+| HA de Filebeat | Un contenedor; si cae, solo perdemos ingesta de ese host | Un Beat por host / DaemonSet — la HA del dato está en **ES**, no en el agente |
 | HA de Kibana | Una instancia | Varias instancias stateless + LB; estado en ES |
 | Sizing shards | ILM crea backing indices pequeños | Objetivo **20–50 GB/shard** (ver M12-04) |
 
@@ -121,7 +129,9 @@ Referencia: [docs/componentes/elasticsearch.md](../../docs/componentes/elasticse
 
 ### Paso 6 — Parámetros que mueven la disponibilidad
 
-No los cambies en el lab salvo el ejercicio opcional — solo **lee** qué existen:
+`number_of_replicas` y `wait_for_active_shards` son palancas del trade-off **disponibilidad ↔ consistencia** (marco CAP en [docs/cap-y-consistencia-stack.md](../../docs/cap-y-consistencia-stack.md)). Los leemos ahora; no los cambies sin entender el efecto en ack de bulk.
+
+No los cambiamos en el lab salvo el ejercicio opcional — solo **lee** qué existen:
 
 ```bash
 curl -fsS 'http://localhost:9200/filebeat-*/_settings?filter_path=**.number_of_replicas' 2>/dev/null | head -10
@@ -140,9 +150,11 @@ Marco CAP del pipeline: [docs/cap-y-consistencia-stack.md](../../docs/cap-y-cons
 
 ### Paso 7 — Ejercicio de diseño (escrito)
 
-Responde en 3–5 frases:
+Sin montar tres nodos, razonamos como **arquitectos**: yellow en lab vs yellow en prod no significan lo mismo; el quorum impar de masters evita split-brain. Las respuestas escritas fijan criterio antes de M03.
 
-1. Tu clúster lab está **`yellow`**. ¿Es bug? ¿Qué comprobarías antes de escalar a prod?
+Respondemos en 3–5 frases:
+
+1. Nuestro clúster lab está **`yellow`**. ¿Es bug? ¿Qué comprobarías antes de escalar a prod?
 2. Un nodo **data** cae en prod con `number_of_replicas: 1` y tres nodos. ¿Qué esperas de `_cluster/health` y de `_cat/shards`?
 3. ¿Por qué **tres** nodos master-eligible (no dos) en producción?
 
@@ -159,6 +171,8 @@ Responde en 3–5 frases:
 
 ### Paso 8 — Opcional: `green` forzado en lab (solo didáctico)
 
+Bajar réplicas a 0 elimina el yellow **a costa de cero redundancia** — green engañoso. Lo hacemos solo para ver la mecánica; en prod sería una regresión de HA, no una «optimización».
+
 Para ver **`green`** en single-node (aceptando **cero HA**):
 
 ```bash
@@ -169,16 +183,16 @@ curl -fsS -X PUT 'http://localhost:9200/filebeat-*/_settings' \
 curl -fsS 'http://localhost:9200/_cluster/health?pretty' | grep status
 ```
 
-Vuelve a comprobar `_cat/shards`: ya no deberían aparecer réplicas `UNASSIGNED`. Documenta el trade-off: **green ≠ alta disponibilidad**.
+Volvemos a comprobar `_cat/shards`: ya no deberían aparecer réplicas `UNASSIGNED`. Documenta el trade-off: **green ≠ alta disponibilidad**.
 
 ---
 
 ## Validación
 
-- [ ] Ejecutaste `_cat/shards` y diste primario vs réplica.
-- [ ] Explicaste por qué `yellow` es normal en single-node con `rep=1`.
-- [ ] Completaste la tabla lab → producción.
-- [ ] (Opcional) Probaste `number_of_replicas: 0` y relacionaste green con pérdida de redundancia.
+- [ ] Ejecutamos `_cat/shards` y distinguimos primario vs réplica.
+- [ ] Explicamos por qué `yellow` es normal en single-node con `rep=1`.
+- [ ] Completamos la tabla lab → producción.
+- [ ] (Opcional) Probamos `number_of_replicas: 0` y relacionamos green con pérdida de redundancia.
 
 ---
 

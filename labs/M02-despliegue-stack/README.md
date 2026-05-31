@@ -14,7 +14,7 @@
 
 ## Contexto
 
-- En M01 viste el conjunto funcionando; en M02 **desmontas y vuelves a montar** cada pieza.
+- En M01 vimos el conjunto funcionando; en M02 desmontamos y volvemos a montar cada pieza. Los pasos incluyen contexto breve antes de los comandos — la lógica de esa capa, no teoría suelta.
 - Cada ejercicio valida con `curl`, `_count` y Discover — nunca solo lectura.
 - Seguridad avanzada (TLS/RBAC) en M09.
 
@@ -34,7 +34,7 @@
 
 ## Antes de seguir (cierre M02)
 
-- [ ] Puedes levantar ES → Kibana → Beats en ese orden.
+- [ ] Podemos levantar ES → Kibana → Beats en ese orden.
 - [ ] `lab-smoke` y `filebeat-*` coexisten en el clúster.
-- [ ] Tienes runbook para “Discover vacío”.
-- [ ] Entiendes por qué el lab puede estar `yellow` y qué implica en prod.
+- [ ] Tenemos runbook para “Discover vacío”.
+- [ ] Entendemos por qué el lab puede estar `yellow` y qué implica en prod.

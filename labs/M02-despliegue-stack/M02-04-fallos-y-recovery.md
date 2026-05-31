@@ -4,11 +4,13 @@
 
 > ⏱️ ~40 min · 🧩 Requisitos: M02-03 (stack completo) · 🖥️ Terminal + Discover
 
-**Objetivo:** ejecutar escenarios de fallo reales (ES caído, Beat caído, Discover vacío), documentar síntoma → comprobación → acción y recuperar el stack con el ritual de M01-04.
+Simulamos fallos reales — ES caído, Beat caído, Discover vacío —, documentamos síntoma → comprobación → acción y recuperamos el stack con el ritual de M01-04.
 
 ---
 
 ### Paso 1 — Estado sano de referencia
+
+M02-04 es un **runbook en vivo**. Cada escenario parte del mismo baseline (`health-check` + `_count`) para cuantificar recovery — «¿volvió a subir el contador?» es la pregunta que cierra cada incidente simulado.
 
 ```bash
 ./scripts/health-check.sh
@@ -19,6 +21,8 @@ echo "baseline count=$C0"
 ---
 
 ### Paso 2 — Escenario A: Elasticsearch caído
+
+Cuando ES no escucha, Filebeat **reintenta** (veremos `connection refused` en logs) y bufferiza en disco hasta cierto límite. Tras el `start`, no hace falta reinstalar el Beat — la ingesta se reanuda sola. Eso es distinto de un mapping error, que sí puede dropear eventos permanentemente.
 
 ```bash
 docker compose -f infra/docker-compose.yml stop elasticsearch
@@ -45,10 +49,12 @@ echo "count tras recovery=$C1"
 
 ### Paso 3 — Escenario B: Discover vacío (checklist real)
 
+El síntoma más reportado en soporte — «Kibana no muestra nada» — suele ser **rango temporal** o data view incorrecto, no clúster caído. Este checklist nos obliga a ir de ES hacia la UI, no al revés.
+
 Simula olvido del operador: time picker estrecho.
 
 1. En Discover (`filebeat-*`), pon el rango a **Last 15 minutes** si hay pocos eventos.
-2. Si no ves nada, ejecuta en terminal:
+2. Si no vemos nada, ejecutamos en terminal:
 
 ```bash
 curl -fsS 'http://localhost:9200/filebeat-*/_count'
@@ -57,17 +63,19 @@ docker compose -f infra/docker-compose.yml ps filebeat
 
 3. Si `_count` > 0 y Filebeat `Up` → amplía time picker a **Last 24 hours**.
 
-Rellena tu runbook:
+Completamos el runbook (ejemplo de fila completa — adaptado al lab):
 
 | Síntoma | Comprobación 1 | Comprobación 2 | Acción |
 |---------|----------------|----------------|--------|
-| Discover vacío | `_count` ¿crece? | ¿`lab-filebeat` Up? | |
+| Discover vacío | `_count` ¿crece al repetir curl? | ¿`lab-filebeat` Up en `docker compose ps`? | Si count > 0 y Beat Up → ampliar time picker; si count = 0 → logs de Filebeat y perfil `beats` |
 
 Compara con [TROUBLESHOOTING](../TROUBLESHOOTING.md).
 
 ---
 
 ### Paso 4 — Escenario C: red interna vs localhost
+
+Docker Compose crea una **red privada** con DNS por nombre de servicio. `localhost` dentro de un contenedor apunta al propio contenedor — error clásico al copiar URLs del host a configs de Beats. En prod el equivalente es confundir IP del nodo con VIP del load balancer.
 
 ```bash
 docker exec lab-filebeat sh -c 'wget -qO- http://elasticsearch:9200/ 2>/dev/null | head -c 80' || \
@@ -81,6 +89,8 @@ Dentro del contenedor **`elasticsearch:9200` funciona**; `localhost:9200` no apu
 
 ### Paso 5 — Recovery completo cronometrado
 
+Cierra el módulo repitiendo el ritual de M01-04, pero ahora sabiendo **qué hace cada capa** que levantamos. Anotamos el tiempo total — en M12 compararás recovery con sizing de JVM y shards.
+
 ```bash
 docker compose -f infra/docker-compose.yml --profile beats down
 date +%H:%M:%S
@@ -89,22 +99,20 @@ docker compose -f infra/docker-compose.yml --profile beats up -d
 date +%H:%M:%S
 ```
 
-Anota el tiempo total. Abre Discover y confirma eventos `demo-app` en los últimos 15 min.
+Anotamos el tiempo total. Abrimos Discover y confirmamos eventos `demo-app` en los últimos 15 min.
 
 ---
 
 ## Validación
 
 - [ ] Filebeat reconectó tras caída de ES sin reinstalar.
-- [ ] Tienes runbook de 3 líneas para “Discover vacío”.
-- [ ] Entiendes por qué `localhost` falla dentro del contenedor Beat.
-- [ ] Completaste un `down` / `up` con health-check OK.
+- [ ] Tenemos runbook de 3 líneas para “Discover vacío”.
+- [ ] Entendemos por qué `localhost` falla dentro del contenedor Beat.
+- [ ] Completamos un `down` / `up` con health-check OK.
 
 ---
 
 ## Antes de seguir
-
-### Pon el foco en
 
 - Orden de arranque: ES → Kibana → Beats.
 - Logs del contenedor antes de `pull` o reinstalar imágenes.
