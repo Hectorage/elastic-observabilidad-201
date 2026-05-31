@@ -1,6 +1,6 @@
 # Laboratorio M02-04 — Operación: romper, diagnosticar, recuperar
 
-[← Página anterior](M02-03-filebeat-ingesta-viva.md) · [▲ Módulo M02](README.md) · [Módulo siguiente: M03 — Recolección →](../M03-recoleccion-beats/README.md)
+[← Página anterior](M02-03-filebeat-ingesta-viva.md) · [▲ Módulo M02](README.md) · [Siguiente →](M02-05-ha-shards-replicas.md)
 
 > ⏱️ ~40 min · 🧩 Requisitos: M02-03 (stack completo) · 🖥️ Terminal + Discover
 
@@ -112,7 +112,7 @@ Anota el tiempo total. Abre Discover y confirma eventos `demo-app` en los últim
 
 ### Reto (tómate tu tiempo)
 
-1. `curl -fsS 'http://localhost:9200/_cat/shards?v' | grep UNASSIGNED` — ¿cuándo lo usarías?
+1. `curl -fsS 'http://localhost:9200/_cat/shards?v' | grep UNASSIGNED` — ¿cuándo lo usarías? (Amplía en [M02-05](M02-05-ha-shards-replicas.md).)
 2. Para `lab-filebeat` 2 min: ¿sube `_count`? ¿sigue green el cluster?
 3. (Opcional) Baja `ES_JAVA_OPTS` y mide tiempo hasta `healthy` tras reinicio.
 

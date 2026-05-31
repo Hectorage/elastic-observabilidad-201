@@ -1,6 +1,6 @@
 # M03 — Recolección con Filebeat, Metricbeat y Auditbeat
 
-[← Página anterior](../M02-despliegue-stack/M02-04-fallos-y-recovery.md) · [Siguiente página →](M03-01-dos-origenes-logs.md)
+[← Página anterior](../M02-despliegue-stack/M02-05-ha-shards-replicas.md) · [Siguiente página →](M03-01-dos-origenes-logs.md)
 
 > ⏱️ ~2 h 25 min (4 ejercicios) · 🧩 Requisitos: M02 completado · 📎 [Chuleta](../CHEATSHEET.md) · [Troubleshooting](../TROUBLESHOOTING.md)
 

@@ -4,7 +4,8 @@ Imágenes **reales** del stack local (`docker compose --profile beats up -d`), n
 
 ```bash
 npm install          # una vez; requiere Google Chrome en el PATH
-npm run capture-screenshots
+npm run capture-screenshots      # capturas generales (M01–M06, M08, M10…)
+npm run capture-m05-screenshots  # capturas del flujo M05 (Lens, dashboards, alertas)
 ```
 
 Requisitos: Elasticsearch y Kibana en marcha, perfil `beats` activo para capturas de `filebeat-*`. El script ejecuta `setup-ilm-lab.sh` y prepara snapshot de demo para M06.
@@ -25,11 +26,33 @@ Requisitos: Elasticsearch y Kibana en marcha, perfil `beats` activo para captura
 | `kibana-index-management-ilm-indices.png` | Index Management — `lab-ilm-demo-*` | M06-02, M06-04 |
 | `kibana-snapshot-repositories.png` | Snapshot and Restore → Repositories | M06-03 |
 | `kibana-snapshots-list.png` | Snapshot and Restore → Snapshots | M06-03 |
-| `kibana-lens-editor.png` | Lens (editor vacío) | M05-01 |
-| `kibana-dashboards-list.png` | Biblioteca de dashboards | M05-02, M10-04 |
-| `kibana-observability-alerts.png` | Observability → Alerts | M08, M05-04 |
+| `kibana-lens-editor.png` | Lens (editor vacío) | referencia genérica |
+| `kibana-dashboards-list.png` | Biblioteca de dashboards | M10-04 |
+| `kibana-observability-alerts.png` | Observability → Alerts | M08 |
 | `kibana-alerting-rules.png` | Stack Management → Rules | M08 |
-| `kibana-saved-objects.png` | Saved Objects | M05-04, M12-04 |
+| `kibana-saved-objects.png` | Saved Objects (listado general) | M12-04 |
 | `kibana-stack-monitoring.png` | Stack Monitoring (estado inicial) | M10-01 |
 
-Script: [`scripts/capture-kibana-screenshots.mjs`](../../scripts/capture-kibana-screenshots.mjs).
+### M05 — Dashboards y Lens (flujo completo)
+
+Generadas con `npm run capture-m05-screenshots` (stack `--profile beats`, runtime fields en `filebeat-*`).
+
+| Archivo | Pantalla | Lab |
+|---------|----------|-----|
+| `m05-discover-demo-app.png` | Discover — `log_source : "demo-app"` | M05-01 |
+| `m05-lens-donut-status.png` | Lens — `status_code` + KQL demo-app | M05-01 |
+| `m05-lens-metric-error.png` | Lens — métrica errores 5xx | M05-02 |
+| `m05-lens-line-latency.png` | Lens — latencia vs tiempo | M05-02 |
+| `m05-dashboard-ops-logs.png` | Dashboard operativo (3 paneles) | M05-02 |
+| `m05-discover-metricbeat-docker.png` | Discover — CPU Docker | M05-03 |
+| `m05-lens-cpu-docker.png` | Lens — `docker.cpu.total.pct` | M05-03 |
+| `m05-dashboard-host-metrics.png` | Dashboard métricas host | M05-03 |
+| `m05-visualize-library.png` | Visualize Library | M05-04 |
+| `m05-saved-objects-lab.png` | Saved Objects — filtro `lab-m05` | M05-04 |
+| `m05-alert-create-rule.png` | Crear regla Elasticsearch query | M05-04 |
+| `m05-observability-alerts.png` | Observability → Alerts | M05-04, M08 |
+| `m05-alert-rule-list.png` | Stack Management → Rules | M05-04, M08 |
+
+Script M05: [`scripts/capture-m05-screenshots.mjs`](../../scripts/capture-m05-screenshots.mjs).
+
+Script general: [`scripts/capture-kibana-screenshots.mjs`](../../scripts/capture-kibana-screenshots.mjs).

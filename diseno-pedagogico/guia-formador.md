@@ -57,6 +57,7 @@ M01 es **hands-on desde el ejercicio 1**: no hay tabla ni diagrama sin stack en 
 - **M02-02:** Discover vacío → time picker, data view, `_search` en ES.
 - **M02-03:** Parar Filebeat detiene `_count`; `add_host_metadata` → `host.*`.
 - **M02-04:** `UNASSIGNED` en `_cat/shards`; dentro del beat solo `elasticsearch:9200` resuelve.
+- **M02-05:** `yellow` = réplicas sin nodo en single-node; prod multi-nodo + `rep≥1` → objetivo `green`; caída de nodo data con réplica → failover.
 
 ## M03 — tres familias (respuestas guía retos)
 
@@ -84,6 +85,11 @@ M01 es **hands-on desde el ejercicio 1**: no hay tabla ni diagrama sin stack en 
 1. **`down -v`:** borra el volumen → datos perdidos; aceptable en lab para reset, nunca en prod.
 2. **`connection refused`:** ES caído, nombre/host mal, red de Compose.
 3. **Shards rojos:** `_cat/shards?v` y `allocation/explain`.
+
+### M02-05
+1. **`yellow` en lab:** normal con `number_of_replicas: 1` y un solo nodo; réplicas `UNASSIGNED`.
+2. **Prod, cae un data node:** réplica promovida a primario si existe otro nodo; health yellow transitorio → green.
+3. **Tres master-eligible:** quorum impar; evita split-brain. No montamos 3 nodos en Codespaces por RAM.
 
 ### M03-01
 1. **Mezclar app+seguridad:** dificulta RBAC, retención y alertas diferenciadas.

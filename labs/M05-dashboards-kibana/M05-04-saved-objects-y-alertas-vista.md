@@ -10,11 +10,19 @@
 
 ---
 
-### Paso 1 — Exportar objetos
+### Paso 1 — Visualize library
 
-**Stack Management** → **Saved Objects** → selecciona visualizaciones y dashboards `lab-m05-*` → **Export** → descarga `lab-m05-export.ndjson`.
+**Visualize Library** lista las Lens de M05-01–03 (`lab-m05-*`). Úsala para comprobar nombres antes de exportar.
 
-![Saved Objects — captura real](../../docs/imagenes/kibana/kibana-saved-objects.png)
+![Visualize Library — objetos lab-m05](../../docs/imagenes/kibana/m05-visualize-library.png)
+
+---
+
+### Paso 2 — Exportar objetos
+
+**Stack Management** → **Saved Objects** → filtra `lab-m05` → selecciona visualizaciones y dashboards → **Export** → descarga `lab-m05-export.ndjson`.
+
+![Saved Objects filtrados por lab-m05](../../docs/imagenes/kibana/m05-saved-objects-lab.png)
 
 Guárdalo en `labs/M05-dashboards-kibana/` solo si tu formador lo pide (no es obligatorio commitear).
 
@@ -22,16 +30,16 @@ Guárdalo en `labs/M05-dashboards-kibana/` solo si tu formador lo pide (no es ob
 
 ---
 
-### Paso 2 — Regla de umbral (Kibana)
+### Paso 3 — Regla de umbral (Kibana)
 
 **Observability** → **Alerts** → **Create rule** → **Elasticsearch query**:
 
-![Observability → Alerts — captura real](../../docs/imagenes/kibana/kibana-observability-alerts.png)
+![Asistente de creación de regla](../../docs/imagenes/kibana/m05-alert-create-rule.png)
 
 | Campo | Valor lab | Notas |
 |-------|-----------|-------|
 | Índice / data view | `filebeat-*` | Misma familia que M05-02 |
-| Query | `log_source : "demo-app" and http.response.status_code : 500` | Ajusta si solo tienes status en `message` |
+| Query | `log_source : "demo-app" and (status_code : 500 or message : *status=500*)` | Ajusta si solo tienes status en `message` |
 | Condición | count **> 0** en **1 min** | Muy sensible — válido para probar mecanismo |
 | Acción | **Log** | Sin SMTP en lab; en prod sería PagerDuty/Slack |
 
@@ -41,9 +49,15 @@ Nombre: `lab-m05-error-spike`.
 
 ---
 
-### Paso 3 — Probar la regla
+### Paso 4 — Gestionar reglas
 
-Espera 2–3 ciclos de evaluación con `loggen` activo (~10 % 500). En **Alerts** → **Rule details** → **Last response**:
+**Stack Management** → **Rules** (o **Observability** → **Alerts**):
+
+![Observability → Alerts — listado](../../docs/imagenes/kibana/m05-observability-alerts.png)
+
+![Stack Management → Rules — búsqueda lab-m05-error-spike](../../docs/imagenes/kibana/m05-alert-rule-list.png)
+
+En **Rule details** → **Last response**:
 
 | Estado | Significa |
 |--------|-----------|
@@ -51,11 +65,11 @@ Espera 2–3 ciclos de evaluación con `loggen` activo (~10 % 500). En **Alerts*
 | `active` | Condición cumplida, alerta en curso |
 | `error` | Query inválida, índice missing, permisos |
 
-Si no dispara en 10 min, ejecuta en terminal el `_count` de M08-02 para confirmar que hay 500 en el índice — distingue «regla mal configurada» de «no hay datos».
+Espera 2–3 ciclos con `loggen` activo (~10 % 500). Si no dispara en 10 min, ejecuta el `_count` de M08-02 para confirmar que hay 500 en el índice.
 
 ---
 
-### Paso 4 — Import en entorno limpio (simulación)
+### Paso 5 — Import en entorno limpio (simulación)
 
 En otro Codespace (opcional): **Import** el NDJSON.
 
@@ -69,13 +83,13 @@ Simula el flujo «compañero fork → import → demo en clase».
 
 ---
 
-### Paso 5 — API de reglas (lectura)
+### Paso 6 — API de reglas (lectura)
 
 ```bash
 curl -fsS 'http://localhost:5601/api/alerting/rules/_find?per_page=5' 2>/dev/null | head -20 || echo "Requiere auth en M09+"
 ```
 
-Sin seguridad (lab), la UI basta; con RBAC (M09), la API permite GitOps de reglas. Anota el `id` de `lab-m05-error-spike` si aparece.
+Sin seguridad (lab), la UI basta; con RBAC (M09), la API permite GitOps de reglas.
 
 ---
 

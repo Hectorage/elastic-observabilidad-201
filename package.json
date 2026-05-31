@@ -8,6 +8,7 @@
   },
   "scripts": {
     "capture-screenshots": "node scripts/capture-kibana-screenshots.mjs",
+    "capture-m05-screenshots": "node scripts/capture-m05-screenshots.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
