@@ -51,7 +51,7 @@ Kafka/Redpanda (M11) y Prometheus entran como integraciones opcionales.
 
 ## Mapa completo del curso (M01–M12)
 
-**Duración total orientativa:** 64 h · Detalle: [diseno-pedagogico/mapa-modulos.md](diseno-pedagogico/mapa-modulos.md)
+**Duración:** **5 sesiones × 5 h = 25 h** — **M01–M12** en aula · [Planificación](diseno-pedagogico/ritmo-clase.md) · [Mapa de módulos](diseno-pedagogico/mapa-modulos.md)
 
 | # | Módulo | Horas | Carpeta (labs/) | Estado |
 |---|--------|-------|-----------------|--------|

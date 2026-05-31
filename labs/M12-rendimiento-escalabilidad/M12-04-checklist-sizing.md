@@ -80,7 +80,7 @@ Añade una línea para **«Kibana lenta»** (M12-01 slowlog, heap M12-03).
 
 ## Cierre del curso
 
-Has recorrido **64 h orientativas** de temario en formato lab-first. Siguiente paso profesional: proyecto real con SLAs, seguridad desde día 1 y sizing basado en métricas de producción — no en defaults del lab.
+Has recorrido el curso **M01–M12** en **25 h** (5 sesiones × 5 h), formato lab-first. Siguiente paso profesional: proyecto real con SLAs, seguridad desde día 1 y sizing basado en métricas de producción — no en defaults del lab.
 
 ### Reto final
 
