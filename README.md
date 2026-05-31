@@ -51,22 +51,30 @@ Kafka/Redpanda (M11) y Prometheus entran como integraciones opcionales.
 
 ## Mapa completo del curso (M01–M12)
 
-**Duración:** **5 sesiones × 5 h = 25 h** — **M01–M12** en aula · [Planificación](diseno-pedagogico/ritmo-clase.md) · [Mapa de módulos](diseno-pedagogico/mapa-modulos.md)
+**Duración:** **5 sesiones × 5 h = 25 h** — **M01–M12** en aula
 
-| # | Módulo | Horas | Carpeta (labs/) | Estado |
-|---|--------|-------|-----------------|--------|
-| M01 | Arquitectura y componentes | 4 h | [M01-arquitectura-stack/](labs/M01-arquitectura-stack/README.md) | listo |
-| M02 | Instalación ES, Kibana y Beats | 6 h | [M02-despliegue-stack/](labs/M02-despliegue-stack/README.md) | listo |
-| M03 | Filebeat, Metricbeat, Auditbeat | 6 h | [M03-recoleccion-beats/](labs/M03-recoleccion-beats/README.md) | listo |
-| M04 | Logstash e ingest pipelines | 7 h | [M04-logstash-pipelines/](labs/M04-logstash-pipelines/README.md) | listo |
-| M05 | Dashboards y alertas en Kibana | 6 h | [M05-dashboards-kibana/](labs/M05-dashboards-kibana/README.md) | listo |
-| M06 | ILM, rollover y snapshots | 5 h | [M06-ilm-snapshots/](labs/M06-ilm-snapshots/README.md) | listo |
-| M07 | Enriquecimiento: grok, geoIP, UA | 5 h | [M07-enriquecimiento-eventos/](labs/M07-enriquecimiento-eventos/README.md) | listo |
-| M08 | Alerting y Watcher | 5 h | [M08-alerting-watcher/](labs/M08-alerting-watcher/README.md) | listo |
-| M09 | Seguridad: TLS, RBAC, LDAP | 6 h | [M09-seguridad-tls-rbac/](labs/M09-seguridad-tls-rbac/README.md) | listo |
-| M10 | Self-observability del stack | 4 h | [M10-self-observability/](labs/M10-self-observability/README.md) | listo |
-| M11 | Kafka, Fluent Bit, Prometheus | 6 h | [M11-integraciones-externas/](labs/M11-integraciones-externas/README.md) | listo |
-| M12 | Rendimiento y escalabilidad | 4 h | [M12-rendimiento-escalabilidad/](labs/M12-rendimiento-escalabilidad/README.md) | listo |
+| Sesión | Módulos |
+|--------|---------|
+| S1 | M01, M02 |
+| S2 | M03, M04 |
+| S3 | M05, M06 |
+| S4 | M07, M08 |
+| S5 | M09, M10, M11, M12 |
+
+| # | Módulo | Carpeta (labs/) | Estado |
+|---|--------|-----------------|--------|
+| M01 | Arquitectura y componentes | [M01-arquitectura-stack/](labs/M01-arquitectura-stack/README.md) | listo |
+| M02 | Instalación ES, Kibana y Beats | [M02-despliegue-stack/](labs/M02-despliegue-stack/README.md) | listo |
+| M03 | Filebeat, Metricbeat, Auditbeat | [M03-recoleccion-beats/](labs/M03-recoleccion-beats/README.md) | listo |
+| M04 | Logstash e ingest pipelines | [M04-logstash-pipelines/](labs/M04-logstash-pipelines/README.md) | listo |
+| M05 | Dashboards y alertas en Kibana | [M05-dashboards-kibana/](labs/M05-dashboards-kibana/README.md) | listo |
+| M06 | ILM, rollover y snapshots | [M06-ilm-snapshots/](labs/M06-ilm-snapshots/README.md) | listo |
+| M07 | Enriquecimiento: grok, geoIP, UA | [M07-enriquecimiento-eventos/](labs/M07-enriquecimiento-eventos/README.md) | listo |
+| M08 | Alerting y Watcher | [M08-alerting-watcher/](labs/M08-alerting-watcher/README.md) | listo |
+| M09 | Seguridad: TLS, RBAC, LDAP | [M09-seguridad-tls-rbac/](labs/M09-seguridad-tls-rbac/README.md) | listo |
+| M10 | Self-observability del stack | [M10-self-observability/](labs/M10-self-observability/README.md) | listo |
+| M11 | Kafka, Fluent Bit, Prometheus | [M11-integraciones-externas/](labs/M11-integraciones-externas/README.md) | listo |
+| M12 | Rendimiento y escalabilidad | [M12-rendimiento-escalabilidad/](labs/M12-rendimiento-escalabilidad/README.md) | listo |
 
 ---
 
@@ -102,7 +110,6 @@ docs/cap-y-consistencia-stack.md  CAP y garantías del pipeline
 infra/                  docker-compose + overrides (logstash, security, integrations)
 infra/ingest-pipelines/ JSON de pipelines (M04/M07)
 scripts/                health-check, apply-ingest-pipelines, setup-ilm-lab
-diseno-pedagogico/      mapa, ritmo, guía del formador
 ```
 
 Convención: carpeta `M04-logstash-pipelines/`, ejercicio `M04-01-logstash-en-el-camino.md`.
