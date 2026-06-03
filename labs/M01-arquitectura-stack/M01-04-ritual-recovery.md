@@ -65,9 +65,13 @@ Este checklist es el de **arranque del stack**, no el de Git. El fork del paso 1
 1. cd a la raíz del repo del lab
 2. docker compose -f infra/docker-compose.yml --profile beats up -d
 3. ./scripts/health-check.sh
-4. Kibana :5601 → Discover → filebeat-*
-5. curl filebeat-*/_count dos veces (debe subir)
+4. Kibana :5601 → Discover → data view filebeat-* (eventos recientes)
+5. Terminal → API de Elasticsearch :9200 (no Filebeat, no Kibana):
+   curl -fsS 'http://localhost:9200/filebeat-*/_count'
+   (esperar ~30 s, repetir el mismo curl; el número "count" debe subir)
 ```
+
+`filebeat-*` aquí es el **nombre del data stream en Elasticsearch** — confirma que siguen entrando documentos. El agente Filebeat no tiene API de conteo en el puerto 9200; solo envía datos a ES.
 
 Opcional al inicio de una jornada nueva: `git pull` si quieres el material más reciente del curso — no forma parte del ritual de observabilidad.
 
