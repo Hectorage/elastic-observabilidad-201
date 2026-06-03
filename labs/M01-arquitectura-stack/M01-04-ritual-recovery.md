@@ -59,15 +59,17 @@ Ejecutamos en orden sin saltarte pasos:
 
 ### Paso 4 — Ritual escrito (cópialo en las notas)
 
-Personalizamos la ruta (`cd`) pero mantén el **orden de comprobaciones**. En incidentes reales, automatizar estos pasos (script, alias, CI smoke test) ahorra más tiempo que memorizar URLs.
+Este checklist es el de **arranque del stack**, no el de Git. El fork del paso 1 de M01-01 solo hace falta una vez; en cada sesión trabajamos desde la **raíz del repo** (en Codespace suele ser `/workspaces/<nombre-del-repo>`).
 
 ```text
-1. cd <fork> && git pull
+1. cd a la raíz del repo del lab
 2. docker compose -f infra/docker-compose.yml --profile beats up -d
 3. ./scripts/health-check.sh
 4. Kibana :5601 → Discover → filebeat-*
 5. curl filebeat-*/_count dos veces (debe subir)
 ```
+
+Opcional al inicio de una jornada nueva: `git pull` si quieres el material más reciente del curso — no forma parte del ritual de observabilidad.
 
 ---
 
@@ -93,7 +95,7 @@ docker compose -f infra/docker-compose.yml --profile beats down
 
 - [ ] Hemos cronometrado un arranque completo hasta `health-check.sh` OK.
 - [ ] La tabla del paso 3 está toda marcada.
-- [ ] Tenemos el ritual de 5 pasos personalizado con nuestra ruta.
+- [ ] Tenemos el ritual de 5 pasos con la ruta real de nuestro repo (Codespace o local).
 - [ ] Sabemos qué hace `down -v` sin haberlo ejecutado en producción.
 
 ---
@@ -127,12 +129,12 @@ Además comprueba en Codespaces que el puerto **5601** está reenviado (pestaña
 
 **3. Alias opcional**
 
-En `~/.bashrc` (ajusta la ruta a el fork):
+En `~/.bashrc` (ajusta la ruta a la raíz de tu clone del repo):
 
 ```bash
-alias elab='cd ~/elastic-observabilidad-201 && ./scripts/health-check.sh'
+alias elab='cd /workspaces/<nombre-repo> && ./scripts/health-check.sh'
 ```
 
-O con la ruta del Codespace: `/workspaces/<nombre-repo>`.
+En local, sustituye por la carpeta donde clonaste el curso.
 
 </details>
