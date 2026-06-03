@@ -2,7 +2,7 @@
 
 [← Página anterior](../M01-arquitectura-stack/M01-04-ritual-recovery.md) · [Siguiente página →](M02-01-solo-elasticsearch.md)
 
-> ⏱️ ~3 h (5 ejercicios) · 🧩 Requisitos: M01 completado · 📎 [Chuleta](../CHEATSHEET.md) · [Troubleshooting](../TROUBLESHOOTING.md)
+> ⏱️ ~3 h (5 ejercicios) · 🧩 Requisitos: M01 completado · 📎 [Chuleta](../CHEATSHEET.md) · [Troubleshooting](../TROUBLESHOOTING.md) · [Plan 2 h + conceptos](../../material-proximas-2h/README.md)
 
 ## Qué aprenderás
 
